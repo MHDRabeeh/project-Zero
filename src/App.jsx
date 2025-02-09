@@ -2,6 +2,7 @@
 import Sidebar from "./components/Sidebar"
 import Topbar from "./components/Topbar";
 import Issue from "./Pages/Issue";
+import { Route,Routes } from "react-router";
 
 function App() {
   return (
@@ -9,8 +10,13 @@ function App() {
       <Sidebar />
       <div className="flex-1 flex flex-col">
         <Topbar />
-        <div className="p-6  overflow-scroll"> 
-          <Issue/>
+        <div className="p-6  overflow-auto"> 
+          <Routes>
+            <Route path="/issue" element={<Issue/>}/>
+          </Routes>
+
+
+          {/* <Issue/> */}
           </div>
       </div>
     </div>

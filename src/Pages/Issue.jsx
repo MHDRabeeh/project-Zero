@@ -3,7 +3,7 @@
 const Issue = () => {
     return (
         <>
-            <div className="flex flex-col bg-white rounded-md">
+            <div className="flex flex-col bg-white rounded-md p-2">
                 <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
                     <div className="inline-block min-w-full py-2 sm:px-6 lg:px-8">
                         <div className="overflow-hidden">
@@ -65,6 +65,31 @@ const Issue = () => {
                         </div>
                     </div>
                 </div>
+                <div className="w-full flex items-center px-1.5 justify-end">
+                    <div className="flex space-x-1">
+                        {/* <!-- Previous Button --> */}
+                        <button className="rounded-md border border-slate-300 py-2 px-3 text-center text-sm transition-all shadow-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 focus:text-gray-900 focus:bg-gray-50 active:bg-gray-50 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2">
+                            Prev
+                        </button>
+
+                        {/* <!-- Page Buttons --> */}
+                        <button className="min-w-9 rounded-md bg-cyan-50 py-2 px-3 border border-transparent text-center text-sm text-cyan-700 font-semibold transition-all shadow-md hover:shadow-lg focus:bg-cyan-100 focus:shadow-none active:bg-cyan-100 hover:bg-cyan-100 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2">
+                            1
+                        </button>
+                        <button className="min-w-9 rounded-md border border-slate-300 py-2 px-3 text-center text-sm transition-all shadow-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 focus:text-gray-900 focus:bg-gray-50 active:bg-gray-50 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2">
+                            2
+                        </button>
+                        <button className="min-w-9 rounded-md border border-slate-300 py-2 px-3 text-center text-sm transition-all shadow-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 focus:text-gray-900 focus:bg-gray-50 active:bg-gray-50 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2">
+                            3
+                        </button>
+
+                        {/* <!-- Next Button --> */}
+                        <button className="min-w-9 rounded-md border border-slate-300 py-2 px-3 text-center text-sm transition-all shadow-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 focus:text-gray-900 focus:bg-gray-50 active:bg-gray-50 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2">
+                            Next
+                        </button>
+                    </div>
+                </div>
+
             </div>
         </>
     )
