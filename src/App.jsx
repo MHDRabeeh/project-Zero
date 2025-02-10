@@ -1,8 +1,10 @@
 
 import Sidebar from "./components/Sidebar"
 import Topbar from "./components/Topbar";
+import Dashboard from "./Pages/Dashboard";
 import Issue from "./Pages/Issue";
 import { Route,Routes } from "react-router";
+import IssueLog from "./Pages/IssueLog";
 
 function App() {
   return (
@@ -13,6 +15,8 @@ function App() {
         <div className="p-6  overflow-auto"> 
           <Routes>
             <Route path="/issue" element={<Issue/>}/>
+            <Route path="/" element={<Dashboard/>}/>
+            <Route path="/issue-log" element={<IssueLog/>}/>
           </Routes>
 
 

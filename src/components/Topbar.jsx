@@ -1,4 +1,4 @@
-import { Bell, ChevronDown } from "lucide-react";
+import { Bell} from "lucide-react";
 
 const Topbar = () => {
   return (
@@ -7,7 +7,7 @@ const Topbar = () => {
       <div></div>
 
       {/* Right - Notification & Profile */}
-      <div className="flex items-center space-x-6">
+      <div className="flex items-center space-x-6  ">
         {/* Notification Bell */}
         <div className="relative cursor-pointer">
           <div className="p-2 rounded-full hover:bg-gray-100 transition duration-300">
@@ -17,17 +17,17 @@ const Topbar = () => {
         </div>
 
         {/* Profile Section */}
-        <div className="flex items-center space-x-3">
+        <div className="flex items-center space-x-3 ">
           <img
             src="https://randomuser.me/api/portraits/men/75.jpg"
             alt="Profile"
-            className="w-8 h-8 rounded-full object-cover border-2 border-gray-200 hover:border-cyan-400 transition duration-300"
+            className="w-8 h-8 rounded-full object-cover border-2 cursor-pointer border-gray-200 hover:border-cyan-400 transition duration-300"
           />
-          <div className="flex items-center space-x-1">
+          <div className="flex items-center space-x-1 ">
             <span className="text-sm text-gray-700">
               Hi, <span className="font-semibold text-gray-900">Michael</span>
             </span>
-            <ChevronDown className="w-4 h-4 text-gray-500 hover:text-cyan-500 transition duration-300 cursor-pointer" />
+            <div className="w-4 h-4 text-gray-500 hover:text-cyan-500 transition duration-300 " />
           </div>
         </div>
       </div>
