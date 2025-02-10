@@ -1,238 +1,205 @@
-// import { Pencil } from 'lucide-react';
+import { useState } from "react";
+import { CheckCircle, XCircle } from "lucide-react";
 
-import { Edit, MessageSquareDiff, MessageSquareShare, Trash } from "lucide-react"
-import { useRef, useState } from "react";
+const AddTableDataForm = () => {
+    const [formData, setFormData] = useState({
+        client: "",
+        region: "",
+        issueClassification: "",
+        issueDetails: "",
+        shiftHandledBy: "",
+        issueAssignedTo: "",
+        status: "Pending", // Default status
+    });
 
-const Issue = () => {
-    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-    const drawerRef = useRef(null);
+    const [errors, setErrors] = useState({});
 
-    const toggleDrawer = () => {
-        setIsDrawerOpen(!isDrawerOpen);
+    // Sample dropdown options
+    const clients = ["Client A", "Client B", "Client C"];
+    const regions = ["Region 1", "Region 2", "Region 3"];
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
     };
 
-    let headingStyle = "text-2xl font-semibold rounded-t-md pl-3 bg-cyan-50 text-cyan-700 mb-6 border-b-2 border-cyan-200 pb-2 hover:bg-cyan-100 hover:text-cyan-800 transition-colors duration-200"
+    const validateForm = () => {
+        const newErrors = {};
+        if (!formData.client) newErrors.client = "Client is required";
+        if (!formData.region) newErrors.region = "Region is required";
+        if (!formData.issueClassification) newErrors.issueClassification = "Issue Classification is required";
+        if (!formData.issueDetails) newErrors.issueDetails = "Issue Details are required";
+        if (!formData.shiftHandledBy) newErrors.shiftHandledBy = "Shift Handled By is required";
+        if (!formData.issueAssignedTo) newErrors.issueAssignedTo = "Issue Assigned To is required";
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
 
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        if (validateForm()) {
+            // Submit form data (e.g., send to API)
+            console.log("Form Data Submitted:", formData);
+            alert("Form submitted successfully!");
+        } else {
+            console.log("Form validation failed");
+        }
+    };
+
+    const handleCancel = () => {
+        // Reset form and go back
+        setFormData({
+            client: "",
+            region: "",
+            issueClassification: "",
+            issueDetails: "",
+            shiftHandledBy: "",
+            issueAssignedTo: "",
+            status: "Pending",
+        });
+        setErrors({});
+        alert("Form canceled.");
+    };
+ let headingStyle = "text-2xl font-semibold rounded-t-md pl-3 bg-cyan-50 text-cyan-700 mb-6 border-b-2 border-cyan-200 pb-2 hover:bg-cyan-100 hover:text-cyan-800 transition-colors duration-200"
     return (
-        <>  <div className="flex flex-col gap-7">
-            <div className="flex flex-col bg-white rounded-md p-2">
-                <h1 className={headingStyle}>
-                    Pending Issues
-                </h1>
-                <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
-                    <div className="inline-block min-w-full py-2 sm:px-6 lg:px-8">
-                        <div className="overflow-hidden">
-                            <table className="min-w-full text-left text-sm font-light text-surface">
-                                <thead className="border-b border-neutral-200 font-medium">
-                                    <tr>
-                                        <th scope="col" className="px-6 py-4">#</th>
-                                        <th scope="col" className="px-6 py-4"> Client</th>
-                                        <th scope="col" className="px-6 py-4">Region</th>
-                                        <th scope="col" className="px-6 py-4">Issue Classification</th>
-                                        <th scope="col" className="px-6 py-4"> Issue Details </th>
+        <div className="flex flex-col bg-white rounded-md p-6 shadow-lg border border-cyan-100">
+            {/* Cyan Shading Effect */}
+            <div className="absolute inset-0 bg-gradient-to-r from-cyan-50 to-white opacity-30 rounded-md -z-10"></div>
 
-                                        <th scope="col" className="px-6 py-4">Shift Handeled by</th>
-                                        <th scope="col" className="px-6 py-4"> Issue Assigned To</th>
-                                        <th scope="col" className="px-6 py-4"> Status</th>
-                                        <th scope="col" className="px-6 py-4"> Actions  </th>
-                                        <th scope="col" className="px-6 py-4"> Comment</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr className="border-b border-neutral-200">
-                                        <td className="whitespace-nowrap px-6 py-4 font-medium">1</td>
-                                        <td className="whitespace-nowrap px-6 py-4">Mark</td>
-                                        <td className="whitespace-nowrap px-6 py-4">Otto</td>
-                                        <td className="whitespace-nowrap px-6 py-4">@mdo</td>
-                                        <td className="whitespace-nowrap px-6 py-4">Mark</td>
-                                        <td className="whitespace-nowrap px-6 py-4">Otto</td>
-                                        <td className="whitespace-nowrap px-6 py-4">Mark</td>
-                                        <td className="whitespace-nowrap px-6 py-4 text-red-500 font-[500] hover:text-red-600">Pending</td>
-                                        <td className="whitespace-nowrap px-6 py-4">
-                                            <button
-                                                onClick={toggleDrawer}
-
-                                                className="text-cyan-400 hover:text-cyan-500 mr-2"
-                                            >
-                                                <Edit size={20} />
-                                            </button>
-                                            <button
-
-                                                className="text-red-500 hover:text-red-700"
-                                            >
-                                                <Trash size={18} />
-                                            </button>
-                                        </td>
-                                        <td className="whitespace-nowrap px-6 py-4 flex justify-center items-center "> <button className="text-cyan-400 hover:text-cyan-500"  title="Add comments"><MessageSquareDiff size={22} /></button></td>
-                                    </tr>
-
-
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                <div className="w-full flex items-center px-1.5 justify-end">
-                    <div className="flex space-x-1">
-                        {/* <!-- Previous Button --> */}
-                        <button className="rounded-md border border-slate-300 py-2 px-3 text-center text-sm transition-all shadow-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 focus:text-gray-900 focus:bg-gray-50 active:bg-gray-50 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2">
-                            Prev
-                        </button>
-
-                        {/* <!-- Page Buttons --> */}
-                        <button className="min-w-9 rounded-md bg-cyan-50 py-2 px-3 border border-transparent text-center text-sm text-cyan-700 font-semibold transition-all shadow-md hover:shadow-lg focus:bg-cyan-100 focus:shadow-none active:bg-cyan-100 hover:bg-cyan-100 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2">
-                            1
-                        </button>
-                        <button className="min-w-9 rounded-md border border-slate-300 py-2 px-3 text-center text-sm transition-all shadow-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 focus:text-gray-900 focus:bg-gray-50 active:bg-gray-50 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2">
-                            2
-                        </button>
-                        <button className="min-w-9 rounded-md border border-slate-300 py-2 px-3 text-center text-sm transition-all shadow-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 focus:text-gray-900 focus:bg-gray-50 active:bg-gray-50 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2">
-                            3
-                        </button>
-
-                        {/* <!-- Next Button --> */}
-                        <button className="min-w-9 rounded-md border border-slate-300 py-2 px-3 text-center text-sm transition-all shadow-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 focus:text-gray-900 focus:bg-gray-50 active:bg-gray-50 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2">
-                            Next
-                        </button>
-                    </div>
-                </div>
-                <div>
-
-
-                    <div
-                        id="drawer-right-example"
-                        className={`fixed top-0 right-0 z-40 h-screen p-4 overflow-y-auto transition-transform w-[30%] bg-white/90 ${isDrawerOpen ? 'translate-x-0' : 'translate-x-full'
-                            }`}
-                        tabIndex="-1"
-                        aria-labelledby="drawer-right-label"
-                        ref={drawerRef} // Add ref for focus management
-                    >
-                        <h5 id="drawer-right-label" className="inline-flex items-center mb-4 text-base font-semibold text-gray-500">
-                            <svg
-                                className="w-4 h-4 me-2.5"
-                                aria-hidden="true"
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="currentColor"
-                                viewBox="0 0 20 20"
-                            >
-                                <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
-                            </svg>
-                            Editing  Issue
-                        </h5>
-                        <button
-                            type="button"
-                            onClick={toggleDrawer}
-                            className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 absolute top-2.5 end-2.5 inline-flex items-center justify-center"
-                            aria-label="Close menu" // Add aria-label for accessibility
+            <h1 className={headingStyle}>Add New Issue</h1>
+            <form onSubmit={handleSubmit} className="space-y-6">
+                {/* Client and Region in One Row */}
+                <div className="grid grid-cols-2 gap-4">
+                    {/* Client Dropdown */}
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700">Client</label>
+                        <select
+                            name="client"
+                            value={formData.client}
+                            onChange={handleChange}
+                            className={`mt-1 block w-full rounded-md border ${
+                                errors.client ? "border-red-500" : "border-gray-300"
+                            } p-2 shadow-sm focus:border-cyan-500 focus:ring-2 focus:ring-cyan-200 transition-all`}
                         >
-                            <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                                <path
-                                    stroke="currentColor"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth="2"
-                                    d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
-                                />
-                            </svg>
+                            <option value="">Select Client</option>
+                            {clients.map((client, index) => (
+                                <option key={index} value={client}>
+                                    {client}
+                                </option>
+                            ))}
+                        </select>
+                        {errors.client && <p className="text-red-500 text-sm mt-1">{errors.client}</p>}
+                    </div>
 
-                        </button>
-
-
+                    {/* Region Dropdown */}
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700">Region</label>
+                        <select
+                            name="region"
+                            value={formData.region}
+                            onChange={handleChange}
+                            className={`mt-1 block w-full rounded-md border ${
+                                errors.region ? "border-red-500" : "border-gray-300"
+                            } p-2  shadow-sm focus:border-cyan-500 focus:ring-2 focus:ring-cyan-200 transition-all`}
+                        >
+                            <option value="">Select Region</option>
+                            {regions.map((region, index) => (
+                                <option key={index} value={region}>
+                                    {region}
+                                </option>
+                            ))}
+                        </select>
+                        {errors.region && <p className="text-red-500 text-sm mt-1">{errors.region}</p>}
                     </div>
                 </div>
 
-            </div>
-
-            {/* resolved issues */}
-
-            <div className="flex flex-col bg-white rounded-md p-2">
-                <h1 className="text-2xl  pl-3  font-semibold bg-green-50 text-green-700 mb-6 border-b-2 border-green-200 pb-2 hover:bg-green-100 hover:text-green-800 transition-colors duration-200">
-                    Resolved Issues
-                </h1>
-                <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
-                    <div className="inline-block min-w-full py-2 sm:px-6 lg:px-8">
-                        <div className="overflow-hidden">
-                            <table className="min-w-full text-left text-sm font-light text-surface">
-                                <thead className="border-b border-neutral-200 font-medium">
-                                    <tr>
-                                        <th scope="col" className="px-6 py-4">#</th>
-                                        <th scope="col" className="px-6 py-4"> Client</th>
-                                        <th scope="col" className="px-6 py-4">Region</th>
-                                        <th scope="col" className="px-6 py-4">Issue Classification</th>
-                                        <th scope="col" className="px-6 py-4"> Issue Details </th>
-
-                                        <th scope="col" className="px-6 py-4">Shift Handeled by</th>
-                                        <th scope="col" className="px-6 py-4"> Issue Assigned To</th>
-                                        <th scope="col" className="px-6 py-4"> Status</th>
-                                        <th scope="col" className="px-6 py-4"> Actions  </th>
-                                        <th scope="col" className="px-6 py-4"> Comment</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr className="border-b border-neutral-200">
-                                        <td className="whitespace-nowrap px-6 py-4 font-medium">1</td>
-                                        <td className="whitespace-nowrap px-6 py-4">Mark</td>
-                                        <td className="whitespace-nowrap px-6 py-4">Otto</td>
-                                        <td className="whitespace-nowrap px-6 py-4">@mdo</td>
-                                        <td className="whitespace-nowrap px-6 py-4">Mark</td>
-                                        <td className="whitespace-nowrap px-6 py-4">Otto</td>
-                                        <td className="whitespace-nowrap px-6 py-4">Mark</td>
-                                        <td className="whitespace-nowrap px-6 py-4 text-green-500 font-[500] hover:text-green-600">Completed</td>
-                                        <td className="whitespace-nowrap px-6 py-4">
-                                            <button
-                                                onClick={toggleDrawer}
-
-                                                className="text-cyan-400 hover:text-cyan-500 mr-2"
-                                            >
-                                                <Edit size={20} />
-                                            </button>
-                                            <button
-
-                                                className="text-red-500 hover:text-red-700"
-                                            >
-                                                <Trash size={18} />
-                                            </button>
-                                        </td>
-                                        <td className="whitespace-nowrap px-6 py-4 flex justify-center items-center "> <button   className="text-cyan-400  hover:text-cyan-500" title="View all  comments"><MessageSquareShare size={22} /></button></td>
-                                    </tr>
-
-
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+                {/* Issue Classification Field */}
+                <div>
+                    <label className="block text-sm font-medium text-gray-700">Issue Classification</label>
+                    <input
+                        type="text"
+                        name="issueClassification"
+                        value={formData.issueClassification}
+                        onChange={handleChange}
+                        className={`mt-1 block w-full rounded-md border ${
+                            errors.issueClassification ? "border-red-500" : "border-gray-300"
+                        } p-2 shadow-sm focus:border-cyan-500 focus:ring-2 focus:ring-cyan-200 transition-all`}
+                    />
+                    {errors.issueClassification && (
+                        <p className="text-red-500 text-sm mt-1">{errors.issueClassification}</p>
+                    )}
                 </div>
-                <div className="w-full flex items-center px-1.5 justify-end">
-                    <div className="flex space-x-1">
-                        {/* <!-- Previous Button --> */}
-                        <button className="rounded-md border border-slate-300 py-2 px-3 text-center text-sm transition-all shadow-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 focus:text-gray-900 focus:bg-gray-50 active:bg-gray-50 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2">
-                            Prev
-                        </button>
 
-                        {/* <!-- Page Buttons --> */}
-                        <button className="min-w-9 rounded-md bg-cyan-50 py-2 px-3 border border-transparent text-center text-sm text-cyan-700 font-semibold transition-all shadow-md hover:shadow-lg focus:bg-cyan-100 focus:shadow-none active:bg-cyan-100 hover:bg-cyan-100 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2">
-                            1
-                        </button>
-                        <button className="min-w-9 rounded-md border border-slate-300 py-2 px-3 text-center text-sm transition-all shadow-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 focus:text-gray-900 focus:bg-gray-50 active:bg-gray-50 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2">
-                            2
-                        </button>
-                        <button className="min-w-9 rounded-md border border-slate-300 py-2 px-3 text-center text-sm transition-all shadow-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 focus:text-gray-900 focus:bg-gray-50 active:bg-gray-50 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2">
-                            3
-                        </button>
-
-                        {/* <!-- Next Button --> */}
-                        <button className="min-w-9 rounded-md border border-slate-300 py-2 px-3 text-center text-sm transition-all shadow-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 focus:text-gray-900 focus:bg-gray-50 active:bg-gray-50 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2">
-                            Next
-                        </button>
-                    </div>
+                {/* Issue Details Field */}
+                <div>
+                    <label className="block text-sm font-medium text-gray-700">Issue Details</label>
+                    <textarea
+                        name="issueDetails"
+                        value={formData.issueDetails}
+                        onChange={handleChange}
+                        className={`mt-1 block w-full rounded-md border ${
+                            errors.issueDetails ? "border-red-500" : "border-gray-300"
+                        } p-2 shadow-sm focus:border-cyan-500 focus:ring-2 focus:ring-cyan-200 transition-all`}
+                        rows="3"
+                    />
+                    {errors.issueDetails && <p className="text-red-500 text-sm mt-1">{errors.issueDetails}</p>}
                 </div>
-               
 
-            </div>
+                {/* Shift Handled By Field */}
+                <div>
+                    <label className="block text-sm font-medium text-gray-700">Shift Handled By</label>
+                    <input
+                        type="text"
+                        name="shiftHandledBy"
+                        value={formData.shiftHandledBy}
+                        onChange={handleChange}
+                        className={`mt-1 block w-full rounded-md border ${
+                            errors.shiftHandledBy ? "border-red-500" : "border-gray-300"
+                        } p-2 shadow-sm focus:border-cyan-500 focus:ring-2 focus:ring-cyan-200 transition-all`}
+                    />
+                    {errors.shiftHandledBy && (
+                        <p className="text-red-500 text-sm mt-1">{errors.shiftHandledBy}</p>
+                    )}
+                </div>
+
+                {/* Issue Assigned To Field */}
+                <div>
+                    <label className="block text-sm font-medium text-gray-700">Issue Assigned To</label>
+                    <input
+                        type="text"
+                        name="issueAssignedTo"
+                        value={formData.issueAssignedTo}
+                        onChange={handleChange}
+                        className={`mt-1 block w-full rounded-md border ${
+                            errors.issueAssignedTo ? "border-red-500" : "border-gray-300"
+                        } p-2 shadow-sm focus:border-cyan-500 focus:ring-2 focus:ring-cyan-200 transition-all`}
+                    />
+                    {errors.issueAssignedTo && (
+                        <p className="text-red-500 text-sm mt-1">{errors.issueAssignedTo}</p>
+                    )}
+                </div>
+
+                {/* Buttons */}
+                <div className="flex justify-end space-x-4">
+                    <button
+                        type="button"
+                        onClick={handleCancel}
+                        className="flex items-center bg-gray-100 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-200 transition-colors"
+                    >
+                        <XCircle size={18} className="mr-2" />
+                        Cancel
+                    </button>
+                    <button
+                        type="submit"
+                        className="flex items-center bg-cyan-500 text-white px-4 py-2 rounded-md hover:bg-cyan-600 transition-colors"
+                    >
+                        <CheckCircle size={18} className="mr-2" />
+                        Submit
+                    </button>
+                </div>
+            </form>
         </div>
+    );
+};
 
-        </>
-    )
-}
-
-export default Issue
+export default AddTableDataForm;
