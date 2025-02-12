@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Home, Users, Folder, Calendar, FileText, PieChart } from "lucide-react";
+import { Home, Users, Folder, Search, Activity, ActivityIcon, ListTodo } from "lucide-react";
 import NavItem from "./NavItem";
 import { useNavigate } from "react-router";
 
@@ -18,16 +18,18 @@ const Sidebar = () => {
       <div className="flex items-center space-x-2 px-2 mb-8">
         <span className="text-2xl font-bold text-cyan-500">🌊</span>
         <span className="text-xl font-semibold text-gray-800">Flow finity</span>
+        
       </div>
-
+   
       {/* Navigation Links */}
       <nav className="flex-1 space-y-1">
         <NavItem icon={Home} label="Dashboard" active={activeItem === "/"} onClick={() => setActiveItem("/")} />
         <NavItem icon={Users} label="Issue" active={activeItem === "/issue"} onClick={() => setActiveItem("/issue")} />
         <NavItem icon={Folder} label="Issue Log" active={activeItem === "/issue-log"} onClick={() => setActiveItem("/issue-log")} />
-        <NavItem icon={Calendar} label="Calendar" active={activeItem === "/calendar"} onClick={() => setActiveItem("/calendar")} />
-        <NavItem icon={FileText} label="Documents" active={activeItem === "/documents"} onClick={() => setActiveItem("/documents")} />
-        <NavItem icon={PieChart} label="Reports" active={activeItem === "/reports"} onClick={() => setActiveItem("/reports")} />
+        <NavItem icon={Activity} label="Activity" active={activeItem === "/activity"} onClick={() => setActiveItem("/activity")} />
+        <NavItem icon={ActivityIcon} label="Activity Log" active={activeItem === "/activity-log"} onClick={() => setActiveItem("/activity-log")} />
+        <NavItem icon={ListTodo} label="My Todo" active={activeItem === "/my-todo"} onClick={() => setActiveItem("/my-todo")} />
+        <NavItem icon={Search} label="SAL Search" active={activeItem === "/sla-search"} onClick={() => setActiveItem("/sla-search")} />
       </nav>
 
       {/* Optional: User Profile or Footer */}

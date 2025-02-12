@@ -5,6 +5,10 @@ import Dashboard from "./Pages/Dashboard";
 import Issue from "./Pages/Issue";
 import { Route,Routes } from "react-router";
 import IssueLog from "./Pages/IssueLog";
+import Activity from "./Pages/Activity";
+import ActivityLog from "./Pages/ActivityLog";
+import MyTodo from "./Pages/MyTodo";
+import SlaSearch from "./Pages/SlaSearch";
 
 function App() {
   return (
@@ -17,6 +21,11 @@ function App() {
             <Route path="/issue" element={<Issue/>}/>
             <Route path="/" element={<Dashboard/>}/>
             <Route path="/issue-log" element={<IssueLog/>}/>
+            <Route path="/activity" element={<Activity/>}/>
+            <Route path="/activity-log" element={<ActivityLog/>}/>
+            <Route path="/my-todo" element={<MyTodo/>}/>
+            <Route path="/sla-search" element={<SlaSearch/>}/>
+
           </Routes>
 
 

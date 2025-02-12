@@ -1,238 +1,196 @@
-// import { Pencil } from 'lucide-react';
+import { EditOutlined, DeleteOutlined, MessageOutlined } from "@ant-design/icons";
+import { Table, Button, Typography, Space, Tag, Row, Col } from "antd";
+import { useState } from "react";
+import EditIssueDrawer from "../components/EditeIssueDrawer";
+import { Filter } from "lucide-react";
 
-import { Edit, MessageSquareDiff, MessageSquareShare, Trash } from "lucide-react"
-import { useRef, useState } from "react";
+const { Title } = Typography;
 
 const IssueLog = () => {
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-    const drawerRef = useRef(null);
 
     const toggleDrawer = () => {
         setIsDrawerOpen(!isDrawerOpen);
     };
 
-    let headingStyle = "text-2xl font-semibold rounded-t-md pl-3 bg-cyan-50 text-cyan-700 mb-6 border-b-2 border-cyan-200 pb-2 hover:bg-cyan-100 hover:text-cyan-800 transition-colors duration-200"
+    // Function to generate random date and time
+    const generateRandomDate = () => {
+        const start = new Date(2020, 0, 1).getTime();
+        const end = new Date().getTime();
+        const randomDate = new Date(start + Math.random() * (end - start));
+        return randomDate.toLocaleString();
+    };
+
+    const columns = [
+        {
+            title: "#",
+            dataIndex: "id",
+            key: "id",
+        },
+        {
+            title: "Ticket No",
+            dataIndex: "ticketNo",
+            key: "ticketNo",
+        },
+        {
+            title: "Client",
+            dataIndex: "client",
+            key: "client",
+        },
+        {
+            title: "Region",
+            dataIndex: "region",
+            key: "region",
+        },
+        {
+            title: "Issue Classification",
+            dataIndex: "classification",
+            key: "classification",
+        },
+        {
+            title: "Issue Details",
+            dataIndex: "details",
+            key: "details",
+        },
+        {
+            title: "Shift Handled by",
+            dataIndex: "handledBy",
+            key: "handledBy",
+        },
+        {
+            title: "Issue Assigned To",
+            dataIndex: "assignedTo",
+            key: "assignedTo",
+        },
+        {
+            title: "Status",
+            dataIndex: "status",
+            key: "status",
+            render: (status) => (
+                <Tag color={status === "Pending" ? "red" : "green"}>{status}</Tag>
+            ),
+        },
+        {
+            title: "Date",
+            dataIndex: "date",
+            key: "date",
+            render: (date) => <span>{date}</span>,
+        },
+        {
+            title: "Actions",
+            key: "actions",
+            render: () => (
+                <Space>
+                    <Button type="link" icon={<EditOutlined />} onClick={toggleDrawer} />
+                    <Button type="link" icon={<DeleteOutlined />} danger />
+                </Space>
+            ),
+        },
+        {
+            title: "Comment",
+            key: "comment",
+            render: () => <Button type="link" icon={<MessageOutlined />} />,
+        },
+    ];
+
+    const dataOne = [
+        {
+            id: 1,
+            ticketNo:"A7X9B3Q5",
+            client: "Mark",
+            region: "Otto",
+            classification: "@mdo",
+            details: "Some issue details",
+            handledBy: "Otto",
+            assignedTo: "Mark",
+            status: "Pending",
+            date: generateRandomDate(),
+        },
+        {
+            id: 2,
+            ticketNo:"A7X9B3Y67",
+            client: "John",
+            region: "Doe",
+            classification: "@jdo",
+            details: "More issue details",
+            handledBy: "Jane",
+            assignedTo: "John",
+            status: "Pending",
+            date: generateRandomDate(),
+        },
+    ];
+
+    const datatwo = [
+        {
+            id: 1,
+            ticketNo:"A7X9B3YT",
+            client: "Mark",
+            region: "Otto",
+            classification: "@mdo",
+            details: "Some issue details",
+            handledBy: "Otto",
+            assignedTo: "Mark",
+            status: "Completed",
+            date: generateRandomDate(),
+        },
+        {
+            id: 2,
+            ticketNo:"A7X9B3Y67",
+            client: "John",
+            region: "Doe",
+            classification: "@jdo",
+            details: "More issue details",
+            handledBy: "Jane",
+            assignedTo: "John",
+            status: "Completed ",
+            date: generateRandomDate(),
+        },
+    ];
 
     return (
-        <>  <div className="flex flex-col gap-7">
-            <div className="flex flex-col bg-white rounded-md p-2">
-                <h1 className={headingStyle}>
-                    Pending Issues
-                </h1>
-                <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
-                    <div className="inline-block min-w-full py-2 sm:px-6 lg:px-8">
-                        <div className="overflow-hidden">
-                            <table className="min-w-full text-left text-sm font-light text-surface">
-                                <thead className="border-b border-neutral-200 font-medium">
-                                    <tr>
-                                        <th scope="col" className="px-6 py-4">#</th>
-                                        <th scope="col" className="px-6 py-4"> Client</th>
-                                        <th scope="col" className="px-6 py-4">Region</th>
-                                        <th scope="col" className="px-6 py-4">Issue Classification</th>
-                                        <th scope="col" className="px-6 py-4"> Issue Details </th>
+        <div>
+            <div style={{ marginBottom: 20 }}>
 
-                                        <th scope="col" className="px-6 py-4">Shift Handeled by</th>
-                                        <th scope="col" className="px-6 py-4"> Issue Assigned To</th>
-                                        <th scope="col" className="px-6 py-4"> Status</th>
-                                        <th scope="col" className="px-6 py-4"> Actions  </th>
-                                        <th scope="col" className="px-6 py-4"> Comment</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr className="border-b border-neutral-200">
-                                        <td className="whitespace-nowrap px-6 py-4 font-medium">1</td>
-                                        <td className="whitespace-nowrap px-6 py-4">Mark</td>
-                                        <td className="whitespace-nowrap px-6 py-4">Otto</td>
-                                        <td className="whitespace-nowrap px-6 py-4">@mdo</td>
-                                        <td className="whitespace-nowrap px-6 py-4">Mark</td>
-                                        <td className="whitespace-nowrap px-6 py-4">Otto</td>
-                                        <td className="whitespace-nowrap px-6 py-4">Mark</td>
-                                        <td className="whitespace-nowrap px-6 py-4 text-red-500 font-[500] hover:text-red-600">Pending</td>
-                                        <td className="whitespace-nowrap px-6 py-4">
-                                            <button
-                                                onClick={toggleDrawer}
-
-                                                className="text-cyan-400 hover:text-cyan-500 mr-2"
-                                            >
-                                                <Edit size={20} />
-                                            </button>
-                                            <button
-
-                                                className="text-red-500 hover:text-red-700"
-                                            >
-                                                <Trash size={18} />
-                                            </button>
-                                        </td>
-                                        <td className="whitespace-nowrap px-6 py-4 flex justify-center items-center "> <button className="text-cyan-400 hover:text-cyan-500"  title="Add comments"><MessageSquareDiff size={22} /></button></td>
-                                    </tr>
-
-
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                <div className="w-full flex items-center px-1.5 justify-end">
-                    <div className="flex space-x-1">
-                        {/* <!-- Previous Button --> */}
-                        <button className="rounded-md border border-slate-300 py-2 px-3 text-center text-sm transition-all shadow-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 focus:text-gray-900 focus:bg-gray-50 active:bg-gray-50 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2">
-                            Prev
+                <Row justify="space-between" align="middle" className="px-2">
+                    <Col>
+                        <Title level={3} style={{ color: "#1890ff" }}>Pending Issues</Title>
+                    </Col>
+                    <Col>
+                        <button className="flex items-center bg-white mb-1 text-[#1890ff] px-4 py-2 rounded-md hover:bg-cyan-100 transition-colors">
+                            <Filter size={18} className="mr-2" />Filter
                         </button>
-
-                        {/* <!-- Page Buttons --> */}
-                        <button className="min-w-9 rounded-md bg-cyan-50 py-2 px-3 border border-transparent text-center text-sm text-cyan-700 font-semibold transition-all shadow-md hover:shadow-lg focus:bg-cyan-100 focus:shadow-none active:bg-cyan-100 hover:bg-cyan-100 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2">
-                            1
-                        </button>
-                        <button className="min-w-9 rounded-md border border-slate-300 py-2 px-3 text-center text-sm transition-all shadow-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 focus:text-gray-900 focus:bg-gray-50 active:bg-gray-50 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2">
-                            2
-                        </button>
-                        <button className="min-w-9 rounded-md border border-slate-300 py-2 px-3 text-center text-sm transition-all shadow-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 focus:text-gray-900 focus:bg-gray-50 active:bg-gray-50 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2">
-                            3
-                        </button>
-
-                        {/* <!-- Next Button --> */}
-                        <button className="min-w-9 rounded-md border border-slate-300 py-2 px-3 text-center text-sm transition-all shadow-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 focus:text-gray-900 focus:bg-gray-50 active:bg-gray-50 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2">
-                            Next
-                        </button>
-                    </div>
-                </div>
-                <div>
-
-
-                    <div
-                        id="drawer-right-example"
-                        className={`fixed top-0 right-0 z-40 h-screen p-4 overflow-y-auto transition-transform w-[30%] bg-white/90 ${isDrawerOpen ? 'translate-x-0' : 'translate-x-full'
-                            }`}
-                        tabIndex="-1"
-                        aria-labelledby="drawer-right-label"
-                        ref={drawerRef} // Add ref for focus management
-                    >
-                        <h5 id="drawer-right-label" className="inline-flex items-center mb-4 text-base font-semibold text-gray-500">
-                            <svg
-                                className="w-4 h-4 me-2.5"
-                                aria-hidden="true"
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="currentColor"
-                                viewBox="0 0 20 20"
-                            >
-                                <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
-                            </svg>
-                            Editing  Issue
-                        </h5>
-                        <button
-                            type="button"
-                            onClick={toggleDrawer}
-                            className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 absolute top-2.5 end-2.5 inline-flex items-center justify-center"
-                            aria-label="Close menu" // Add aria-label for accessibility
-                        >
-                            <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                                <path
-                                    stroke="currentColor"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth="2"
-                                    d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
-                                />
-                            </svg>
-
-                        </button>
-
-
-                    </div>
-                </div>
-
+                    </Col>
+                </Row>
+                <Table columns={columns} dataSource={dataOne} rowKey="id" pagination={{ pageSize: 5 }} />
             </div>
 
-            {/* resolved issues */}
-
-            <div className="flex flex-col bg-white rounded-md p-2">
-                <h1 className="text-2xl  pl-3  font-semibold bg-green-50 text-green-700 mb-6 border-b-2 border-green-200 pb-2 hover:bg-green-100 hover:text-green-800 transition-colors duration-200">
-                    Resolved Issues
-                </h1>
-                <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
-                    <div className="inline-block min-w-full py-2 sm:px-6 lg:px-8">
-                        <div className="overflow-hidden">
-                            <table className="min-w-full text-left text-sm font-light text-surface">
-                                <thead className="border-b border-neutral-200 font-medium">
-                                    <tr>
-                                        <th scope="col" className="px-6 py-4">#</th>
-                                        <th scope="col" className="px-6 py-4"> Client</th>
-                                        <th scope="col" className="px-6 py-4">Region</th>
-                                        <th scope="col" className="px-6 py-4">Issue Classification</th>
-                                        <th scope="col" className="px-6 py-4"> Issue Details </th>
-
-                                        <th scope="col" className="px-6 py-4">Shift Handeled by</th>
-                                        <th scope="col" className="px-6 py-4"> Issue Assigned To</th>
-                                        <th scope="col" className="px-6 py-4"> Status</th>
-                                        <th scope="col" className="px-6 py-4"> Actions  </th>
-                                        <th scope="col" className="px-6 py-4"> Comment</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr className="border-b border-neutral-200">
-                                        <td className="whitespace-nowrap px-6 py-4 font-medium">1</td>
-                                        <td className="whitespace-nowrap px-6 py-4">Mark</td>
-                                        <td className="whitespace-nowrap px-6 py-4">Otto</td>
-                                        <td className="whitespace-nowrap px-6 py-4">@mdo</td>
-                                        <td className="whitespace-nowrap px-6 py-4">Mark</td>
-                                        <td className="whitespace-nowrap px-6 py-4">Otto</td>
-                                        <td className="whitespace-nowrap px-6 py-4">Mark</td>
-                                        <td className="whitespace-nowrap px-6 py-4 text-green-500 font-[500] hover:text-green-600">Completed</td>
-                                        <td className="whitespace-nowrap px-6 py-4">
-                                            <button
-                                                onClick={toggleDrawer}
-
-                                                className="text-cyan-400 hover:text-cyan-500 mr-2"
-                                            >
-                                                <Edit size={20} />
-                                            </button>
-                                            <button
-
-                                                className="text-red-500 hover:text-red-700"
-                                            >
-                                                <Trash size={18} />
-                                            </button>
-                                        </td>
-                                        <td className="whitespace-nowrap px-6 py-4 flex justify-center items-center "> <button   className="text-cyan-400  hover:text-cyan-500" title="View all  comments"><MessageSquareShare size={22} /></button></td>
-                                    </tr>
-
-
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                <div className="w-full flex items-center px-1.5 justify-end">
-                    <div className="flex space-x-1">
-                        {/* <!-- Previous Button --> */}
-                        <button className="rounded-md border border-slate-300 py-2 px-3 text-center text-sm transition-all shadow-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 focus:text-gray-900 focus:bg-gray-50 active:bg-gray-50 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2">
-                            Prev
+            <div>
+            <Row justify="space-between" align="middle" className="px-2">
+                    <Col>
+                        <Title  level={3} style={{ color: "#52c41a" }}>Resolved Issues</Title>
+                    </Col>
+                    <Col>
+                        <button className="flex items-center bg-white mb-1 text-[#1890ff] px-4 py-2 rounded-md hover:bg-cyan-100 transition-colors">
+                            <Filter size={18} className="mr-2" />Filter
                         </button>
-
-                        {/* <!-- Page Buttons --> */}
-                        <button className="min-w-9 rounded-md bg-cyan-50 py-2 px-3 border border-transparent text-center text-sm text-cyan-700 font-semibold transition-all shadow-md hover:shadow-lg focus:bg-cyan-100 focus:shadow-none active:bg-cyan-100 hover:bg-cyan-100 active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2">
-                            1
-                        </button>
-                        <button className="min-w-9 rounded-md border border-slate-300 py-2 px-3 text-center text-sm transition-all shadow-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 focus:text-gray-900 focus:bg-gray-50 active:bg-gray-50 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2">
-                            2
-                        </button>
-                        <button className="min-w-9 rounded-md border border-slate-300 py-2 px-3 text-center text-sm transition-all shadow-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 focus:text-gray-900 focus:bg-gray-50 active:bg-gray-50 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2">
-                            3
-                        </button>
-
-                        {/* <!-- Next Button --> */}
-                        <button className="min-w-9 rounded-md border border-slate-300 py-2 px-3 text-center text-sm transition-all shadow-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 focus:text-gray-900 focus:bg-gray-50 active:bg-gray-50 disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none ml-2">
-                            Next
-                        </button>
-                    </div>
-                </div>
-               
-
+                    </Col>
+                </Row>
+                <Table columns={columns} dataSource={datatwo} rowKey="id" pagination={{ pageSize: 5 }} />
             </div>
-        </div>
+            
 
-        </>
-    )
-}
+            {/* <Drawer
+                title="Editing Issue"
+                placement="right"
+                width={400}
+                onClose={toggleDrawer}
+                open={isDrawerOpen}
+            >
+                <p>Edit issue details here...</p>
+            </Drawer> */}
+            <EditIssueDrawer isOpen={isDrawerOpen} onClose={toggleDrawer} />
+        </div >
+    );
+};
 
-export default IssueLog
+export default IssueLog;

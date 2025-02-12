@@ -1,10 +1,11 @@
 import { Bell} from "lucide-react";
-
+import { useLocation } from "react-router-dom";
 const Topbar = () => {
+  const location = useLocation();
   return (
     <div className="h-16 bg-white shadow-sm flex items-center justify-between px-6">
       {/* Left - Empty for balance */}
-      <div></div>
+      <div className="text-gray-600">{location.pathname}</div>
 
       {/* Right - Notification & Profile */}
       <div className="flex items-center space-x-6  ">
