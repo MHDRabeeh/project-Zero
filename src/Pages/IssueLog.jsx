@@ -3,14 +3,19 @@ import { Table, Button, Typography, Space, Tag, Row, Col } from "antd";
 import { useState } from "react";
 import EditIssueDrawer from "../components/EditeIssueDrawer";
 import { Filter } from "lucide-react";
+import FilterDrawer from "../components/FilterDrawer";
 
 const { Title } = Typography;
 
 const IssueLog = () => {
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+    const [openedit,setOpenedit] = useState(false)
 
     const toggleDrawer = () => {
         setIsDrawerOpen(!isDrawerOpen);
+    };
+    const editToggleDrawer = () => {
+        setOpenedit(!openedit);
     };
 
     // Function to generate random date and time
@@ -156,7 +161,7 @@ const IssueLog = () => {
                         <Title level={3} style={{ color: "#1890ff" }}>Pending Issues</Title>
                     </Col>
                     <Col>
-                        <button className="flex items-center bg-white mb-1 text-[#1890ff] px-4 py-2 rounded-md hover:bg-cyan-100 transition-colors">
+                        <button onClick={editToggleDrawer} className="flex items-center bg-white mb-1 text-[#1890ff] px-4 py-2 rounded-md hover:bg-cyan-100 transition-colors">
                             <Filter size={18} className="mr-2" />Filter
                         </button>
                     </Col>
@@ -189,6 +194,7 @@ const IssueLog = () => {
                 <p>Edit issue details here...</p>
             </Drawer> */}
             <EditIssueDrawer isOpen={isDrawerOpen} onClose={toggleDrawer} />
+            <FilterDrawer isOpen={openedit} onClose={editToggleDrawer}/>
         </div >
     );
 };
