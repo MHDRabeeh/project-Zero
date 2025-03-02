@@ -1,5 +1,4 @@
 
-
 const NavItem = ({ icon: Icon, label, active, onClick }) => {
     return (
         <div

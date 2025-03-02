@@ -5,18 +5,11 @@ import { useState } from "react";
 const { Option } = Select;
 
 const FilterDrawer = ({ isOpen, onClose, onApplyFilters }) => {
-    const [filters, setFilters] = useState({
-        ticketNo: "",
-        client: "",
-        region: "",
-        classification: "",
-        details: "",
-        handledBy: "",
-        assignedTo: "",
-        status: "",
+    const [filters, setFilters] = useState({ ticketNo: "",client: "",region: "",classification: "", details: "", handledBy: "",assignedTo: "", status: "",
         date: null,
     });
-
+    const clients = ["Client A", "Client B", "Client C"];
+    const regions = ["Region 1", "Region 2", "Region 3"];
     const handleApplyFilters = () => {
         onApplyFilters(filters);
         onClose();
@@ -87,8 +80,9 @@ const FilterDrawer = ({ isOpen, onClose, onApplyFilters }) => {
                         onChange={(value) => setFilters({ ...filters, status: value })}
                     >
                         <Option value="">All</Option>
-                        <Option value="Pending">Pending</Option>
+                        <Option value="pending">Pending</Option>
                         <Option value="Completed">Completed</Option>
+                        <Option value="Working on this">Working on this</Option>
                     </Select>
                 </Form.Item>
 

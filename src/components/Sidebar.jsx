@@ -33,18 +33,18 @@ const Sidebar = () => {
       </nav>
 
       {/* Optional: User Profile or Footer */}
-      <div className="mt-8 border-t border-gray-100 pt-6">
+      {/* <div className="mt-8 border-t border-gray-100 pt-6">
         <div className="flex items-center space-x-3">
           <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
             <span className="text-sm font-medium text-gray-700">MC</span>
           </div>
           <div>
-            {/* <p className="text-sm font-medium text-gray-800">John Doe</p> */}
+           
             <p className="text-xs text-gray-500">Admin</p>
             
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

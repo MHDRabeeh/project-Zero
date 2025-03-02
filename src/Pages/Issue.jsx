@@ -1,18 +1,58 @@
 // import { useState } from "react";
 import { Form, Input, Select, Button, Row, Col } from "antd";
 import { CheckCircle, XCircle } from "lucide-react";
+import { addIssueData } from '../features/issueSlice'
+import { useDispatch } from "react-redux";
 
 const { TextArea } = Input;
 
 const AddTableDataForm = () => {
+
     const [form] = Form.useForm();
 
     const clients = ["Client A", "Client B", "Client C"];
     const regions = ["Region 1", "Region 2", "Region 3"];
+    const dispatch = useDispatch()
 
     const handleSubmit = (values) => {
-        console.log("Form Data Submitted:", values);
-        alert("Form submitted successfully!");
+        const addnewissue = {
+            id: Date.now(),
+            ticketNumber: `HYT${Date.now()}`,
+            Client: values.client,
+            Region: values.region,
+            issueClassification: values.issueClassification,
+            issuedetails: values.issueDetails,
+            ShiftHandledBy: "Michel",
+            Status: "pending",
+            slaMiss: [
+                {
+                    status: false,
+                    currentDbLatency: null,
+                    maxDblatency: null,
+                    sladetails: null,
+                }],
+            commentsTotal: 2,
+            Comment: [
+                {
+                    CommenterName: "Rahul",
+                    CommentAdded: "Rahul is assigned to this issue",
+                    CommenterDesignation: "DBA",
+                    Date: "23/12/2024",
+                },
+                {
+                    CommenterName: "Siraj",
+                    CommentAdded: "Abort the job",
+                    CommenterDesignation: "DBA",
+                    Date: "23/12/2024",
+                },
+            ],
+
+        }
+        dispatch(addIssueData(addnewissue))
+
+
+        alert("Form submitted successfully!")
+        form.resetFields();
     };
 
     const handleCancel = () => {
@@ -40,7 +80,8 @@ const AddTableDataForm = () => {
                             name="client"
                             rules={[{ required: true, message: "Client is required" }]}
                         >
-                            <Select placeholder="Select Client">
+                            <Select showSearch placeholder="Select Client">
+
                                 {clients.map((client, index) => (
                                     <Select.Option key={index} value={client}>
                                         {client}
@@ -56,7 +97,7 @@ const AddTableDataForm = () => {
                             name="region"
                             rules={[{ required: true, message: "Region is required" }]}
                         >
-                            <Select placeholder="Select Region">
+                            <Select showSearch placeholder="Select Region">
                                 {regions.map((region, index) => (
                                     <Select.Option key={index} value={region}>
                                         {region}
@@ -85,28 +126,6 @@ const AddTableDataForm = () => {
                     <TextArea rows={3} placeholder="Enter Issue Details" />
                 </Form.Item>
 
-                {/* Shift Handled By & Issue Assigned To Row */}
-                <Row gutter={16}>
-                    <Col span={12}>
-                        <Form.Item
-                            label="Shift Handled By"
-                            name="shiftHandledBy"
-                            rules={[{ required: true, message: "Shift Handled By is required" }]}
-                        >
-                            <Input placeholder="Enter Shift Handled By" />
-                        </Form.Item>
-                    </Col>
-
-                    <Col span={12}>
-                        <Form.Item
-                            label="Issue Assigned To"
-                            name="issueAssignedTo"
-                            rules={[{ required: true, message: "Issue Assigned To is required" }]}
-                        >
-                            <Input placeholder="Enter Issue Assigned To" />
-                        </Form.Item>
-                    </Col>
-                </Row>
 
                 {/* Buttons */}
                 <div className="flex justify-end space-x-4">

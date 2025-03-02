@@ -1,169 +1,226 @@
-import { AlertTriangle, Bell, CheckCircle, Info, Trash, Search, Filter, Plus } from "lucide-react";
-import { useNavigate } from "react-router";
+// import { useNavigate } from 'react-router';
+import { BellOutlined, CheckCircleOutlined, DeleteOutlined, SearchOutlined, PlusOutlined } from '@ant-design/icons';
+import { Button, Input, Card, List, Typography, Row, Col } from 'antd';
+import { useSelector, useDispatch } from 'react-redux';
+import { deleteUpdates, createUpdate,clearAllUpdates } from '../features/impUpdateSlice';
+import { useState } from 'react';
+import DeleteModal from '../components/modal/DeleteModal';
+import CreateUpdateDrawer from '../components/Drawer/CreateUpdateDrawer';
+
+const { Title, Text } = Typography;
 
 const Dashboard = () => {
-    const navigate = useNavigate()
-    let headingStyle = "text-2xl font-semibold rounded-t-md pl-3 bg-cyan-50 text-cyan-700 mb-6 border-b-2 border-cyan-200 pb-2 hover:bg-cyan-100 hover:text-cyan-800 transition-colors duration-200";
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [isDrawerVisible, setIsDrawerVisible] = useState(false);
+    const [selectedItem, setSelectedItem] = useState(null);
+    const [searchTerm, setSearchTerm] = useState('');
+    let updateData = useSelector((state) => state.impUpdates);
+    const dispatch = useDispatch();
+    const userName = "Michael"
+
+
+
+    const showDeleteModal = (item) => {
+        setSelectedItem(item);
+        setIsModalVisible(true);
+    };
+
+    const handleCteateUpdates = () => {
+        setIsDrawerVisible(true)
+    }
+
+    const handleDelete = (id) => {
+        dispatch(deleteUpdates({ id: id }))
+    }
+
+    const handleMarkAllAsRead = () => {
+       dispatch(clearAllUpdates())
+        // Dispatch an action to mark all updates as read
+    };
+
+    function handleUpdateSubmit(values) {
+        const newUpdate = {
+            id: Date.now(), // Generate a unique ID
+            UpaterName: values.name, // Automatically included user name
+            designation: values.designation, // User's designation
+            Update: values.update, // Update content
+            Date: values.date, // Automatically included current date
+        };
+
+        dispatch(createUpdate(newUpdate))
+
+
+    }
+
+
+
+
+    const filteredData = updateData.filter((item) =>
+        item.UpaterName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.designation.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.Update.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    console.log(isDrawerVisible);
 
     return (
-        <div>
-            <div>
+        <>
+            <div style={{ padding: 24 }}>
                 {/* Hero Section */}
-                <div className="bg-cyan-50 p-6 rounded-md mb-6">
-                    <h1 className="text-3xl font-bold text-cyan-800 mb-2">Welcome Back, User!</h1>
-                    <p className="text-gray-600">{"Here's what's happening with your issues today"}.</p>
-                    <div className="mt-4 flex space-x-4">
-                        <button onClick={() => navigate("/issue")} className="flex items-center bg-cyan-500 text-white px-4 py-2 rounded-md hover:bg-cyan-600 transition-colors">
-                            <Plus size={18} className="mr-2" />
-                            Create New Issue
-                        </button>
-                        <button className="flex items-center bg-white border border-cyan-500 text-cyan-500 px-4 py-2 rounded-md hover:bg-cyan-50 transition-colors">
-                            <Filter size={18} className="mr-2" />
-                            Filter Notifications
-                        </button>
-                    </div>
-                </div>
+                <Card
+                    style={{
+                        background: 'linear-gradient(135deg, #e6f7ff, #bae7ff)',
+                        border: 'none',
+                        borderRadius: 12,
+                        marginBottom: 24,
+                        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+                    }}
+                >
+                    <Title level={3} style={{ color: '#0050b3', marginBottom: 8 }}>
+                        Welcome Back, User!
+                    </Title>
+                    <Text type="secondary" style={{ fontSize: 16 }}>
+                        {"Here's what's happening with your updates today."}
+                    </Text>
+                    <Row style={{ marginTop: 16 }}>
+                        <Col>
+                            <Button
+                                type="primary"
+                                icon={<PlusOutlined />}
+                                onClick={handleCteateUpdates}
+                                style={{
+                                    background: '#52c41a',
+                                    border: 'none',
+                                    borderRadius: 8,
+                                    boxShadow: '0 2px 8px rgba(82, 196, 26, 0.3)',
+                                }}
+                            >
+                                Create New Update
+                            </Button>
+                        </Col>
+                    </Row>
+                </Card>
 
                 {/* Notification Section */}
-                <div className="flex flex-col bg-white rounded-md p-4">
-                    <h1 className={headingStyle}>
+                <Card
+                    style={{
+                        border: 'none',
+                        borderRadius: 12,
+                        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+                    }}
+                >
+                    <Title level={4} style={{ color: '#0050b3', marginBottom: 24 }}>
                         Important Updates
-                    </h1>
+                    </Title>
 
-                    {/* Search and Filter Bar */}
-                    <div className="flex items-center justify-between mb-6">
-                        <div className="flex items-center bg-gray-50 p-2 rounded-md w-full max-w-md">
-                            <Search size={18} className="text-gray-400 mr-2" />
-                            <input
-                                type="text"
-                                placeholder="Search notifications..."
-                                className="bg-transparent outline-none w-full"
+                    {/* Search Bar */}
+                    <Row gutter={16} style={{ marginBottom: 24 }}>
+                        <Col span={24}>
+                            <Input
+                                placeholder="Search Updates..."
+                                prefix={<SearchOutlined style={{ color: '#bfbfbf' }} />}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                style={{
+                                    borderRadius: 8,
+                                    background: '#f0f2f5',
+                                    border: 'none',
+                                }}
                             />
-                        </div>
-                        <button className="flex items-center bg-cyan-50 text-cyan-500 px-4 py-2 rounded-md hover:bg-cyan-100 transition-colors">
-                            <Filter size={18} className="mr-2" />
-                            Filter
-                        </button>
-                    </div>
+                        </Col>
+                    </Row>
 
                     {/* Notification List */}
-                    <div className="space-y-4">
-                        {/* Single Notification */}
-                        <div className="flex items-center justify-between p-4 border border-neutral-200 rounded-md hover:shadow-md transition-all">
-                            <div className="flex items-center space-x-4">
-                                {/* Notification Icon */}
-                                <div className="p-2 bg-cyan-50 rounded-full">
-                                    <Bell size={20} className="text-cyan-500" />
-                                </div>
-                                {/* Notification Details */}
-                                <div>
-                                    <p className="text-sm font-medium text-gray-800">
-                                        New issue reported by <span className="text-cyan-500">Mark</span> in <span className="font-semibold">Region A</span>.
-                                    </p>
-                                    <p className="text-xs text-gray-500 mt-1">
-                                        2 hours ago
-                                    </p>
-                                </div>
-                            </div>
-                            {/* Notification Actions */}
-                            <div className="flex items-center space-x-2">
-                                <button
-                                    className="text-cyan-400 hover:text-cyan-500"
-                                    title="Mark as read"
+                    <div className=' '>
+                        <List
+                            itemLayout="horizontal"
+                            dataSource={filteredData}
+                            renderItem={(item) => (
+                                <List.Item
+                                    key={item.id}
+                                    style={{
+                                        padding: 16,
+                                        marginBottom: 8,
+                                        borderRadius: 8,
+                                        background: '#fff',
+                                        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.05)',
+                                        transition: 'all 0.3s',
+                                        cursor: 'pointer',
+                                    }}
+                                    actions={[
+                                        <Button
+                                            key={1}
+                                            type="text"
+                                            icon={<CheckCircleOutlined style={{ color: '#13c2c2' }} />}
+                                            onClick={() => handleDelete(item.id)}
+                                        />,
+                                        <Button
+                                            type="text"
+                                            key={2}
+                                            icon={<DeleteOutlined style={{ color: '#ff4d4f' }} />}
+                                            onClick={() => showDeleteModal(item)}
+                                        />,
+                                    ]}
                                 >
-                                    <CheckCircle size={18} />
-                                </button>
-                                <button
-                                    className="text-red-500 hover:text-red-700"
-                                    title="Delete"
-                                >
-                                    <Trash size={18} />
-                                </button>
-                            </div>
-                        </div>
-
-                        {/* Another Notification */}
-                        <div className="flex items-center justify-between p-4 border border-neutral-200 rounded-md hover:shadow-md transition-all">
-                            <div className="flex items-center space-x-4">
-                                {/* Notification Icon */}
-                                <div className="p-2 bg-cyan-50 rounded-full">
-                                    <AlertTriangle size={20} className="text-yellow-500" />
-                                </div>
-                                {/* Notification Details */}
-                                <div>
-                                    <p className="text-sm font-medium text-gray-800">
-                                        Issue <span className="text-red-500">#123</span> is still pending.
-                                    </p>
-                                    <p className="text-xs text-gray-500 mt-1">
-                                        5 hours ago
-                                    </p>
-                                </div>
-                            </div>
-                            {/* Notification Actions */}
-                            <div className="flex items-center space-x-2">
-                                <button
-                                    className="text-cyan-400 hover:text-cyan-500"
-                                    title="Mark as read"
-                                >
-                                    <CheckCircle size={18} />
-                                </button>
-                                <button
-                                    className="text-red-500 hover:text-red-700"
-                                    title="Delete"
-                                >
-                                    <Trash size={18} />
-                                </button>
-                            </div>
-                        </div>
-
-                        {/* Another Notification */}
-                        <div className="flex items-center justify-between p-4 border border-neutral-200 rounded-md hover:shadow-md transition-all">
-                            <div className="flex items-center space-x-4">
-                                {/* Notification Icon */}
-                                <div className="p-2 bg-cyan-50 rounded-full">
-                                    <Info size={20} className="text-blue-500" />
-                                </div>
-                                {/* Notification Details */}
-                                <div>
-                                    <p className="text-sm font-medium text-gray-800">
-                                        Issue <span className="text-green-500">#456</span> has been resolved.
-                                    </p>
-                                    <p className="text-xs text-gray-500 mt-1">
-                                        1 day ago
-                                    </p>
-                                </div>
-                            </div>
-                            {/* Notification Actions */}
-                            <div className="flex items-center space-x-2">
-                                <button
-                                    className="text-cyan-400 hover:text-cyan-500"
-                                    title="Mark as read"
-                                >
-                                    <CheckCircle size={18} />
-                                </button>
-                                <button
-                                    className="text-red-500 hover:text-red-700"
-                                    title="Delete"
-                                >
-                                    <Trash size={18} />
-                                </button>
-                            </div>
-                        </div>
+                                    <List.Item.Meta
+                                        avatar={
+                                            <div
+                                                style={{
+                                                    background: '#e6f7ff',
+                                                    padding: 12,
+                                                    borderRadius: '50%',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center',
+                                                }}
+                                            >
+                                                <BellOutlined style={{ fontSize: 20, color: '#13c2c2' }} />
+                                            </div>
+                                        }
+                                        title={
+                                            <Text style={{ fontWeight: 500 }}>
+                                                {item.UpaterName} ({item.designation}) - {item.Date}
+                                            </Text>
+                                        }
+                                        description={<Text type="secondary">{item.Update}</Text>}
+                                    />
+                                </List.Item>
+                            )}
+                        />
                     </div>
 
                     {/* Quick Actions */}
-                    <div className="mt-6 flex justify-end">
-                        <button className="flex items-center bg-cyan-50 text-cyan-500 px-4 py-2 rounded-md hover:bg-cyan-100 transition-colors">
-                            <CheckCircle size={18} className="mr-2" />
-                            Mark All as Read
-                        </button>
-                    </div>
-                </div>
+                    <Row justify="end" style={{ marginTop: 24 }}>
+                        <Col>
+                            <Button
+                                icon={<CheckCircleOutlined />}
+                                onClick={handleMarkAllAsRead}
+                                style={{
+                                    background: '#e6f7ff',
+                                    color: '#13c2c2',
+                                    border: 'none',
+                                    borderRadius: 8,
+                                }}
+                            >
+                                Mark All as Read
+                            </Button>
+                        </Col>
+                    </Row>
+                </Card>
             </div>
+            {isModalVisible && <DeleteModal
+                isModalVisible={isModalVisible}
+                setIsModalVisible={setIsModalVisible}
+                selectedItem={selectedItem}
+                handleDelete={handleDelete}
+            />}
+            {isDrawerVisible && <CreateUpdateDrawer
+                visible={isDrawerVisible}
+                onClose={setIsDrawerVisible}
+                onSubmit={handleUpdateSubmit}
+                userName={userName}
 
-        </div>
-
-    )
+            />}
+        </>
+    );
 };
 
 export default Dashboard;

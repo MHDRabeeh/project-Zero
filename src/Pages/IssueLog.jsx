@@ -1,202 +1,193 @@
-import { EditOutlined, DeleteOutlined, MessageOutlined } from "@ant-design/icons";
-import { Table, Button, Typography, Space, Tag, Row, Col } from "antd";
-import { useState } from "react";
-import EditIssueDrawer from "../components/EditeIssueDrawer";
-import { Filter } from "lucide-react";
-import FilterDrawer from "../components/FilterDrawer";
+import  { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { EditOutlined, DeleteOutlined, MessageOutlined } from '@ant-design/icons';
+import { Table, Button, Typography, Space, Tag, Row, Col, Modal } from 'antd';
+import EditIssueDrawer from '../components/EditeIssueDrawer';
+import { Filter } from 'lucide-react';
+import FilterDrawer from '../components/FilterDrawer';
+import { deleteRow, updateIssue } from '../features/issueSlice';
+import IssueLogDeleteModal from '../components/modal/IssueLogDeleteModal';
+
 
 const { Title } = Typography;
 
 const IssueLog = () => {
-    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-    const [openedit,setOpenedit] = useState(false)
+  const dispatch = useDispatch();
+  useEffect(()=>{
+   
+  },[])
+  const issueLogData = useSelector((state) => state.issueLogs);
+  const filteredData = issueLogData.filter((issue) =>  issue.slaMiss[0]?.status === false);
+  console.log(issueLogData,"issue log data");
+  console.log(filteredData,"filtered data");
+  
+  
+   
+  // State for managing drawer and modal visibility
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [openedit, setOpenedit] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isOpendeleteModal, setIsOpenDeleteModal] = useState(false);
 
-    const toggleDrawer = () => {
-        setIsDrawerOpen(!isDrawerOpen);
-    };
-    const editToggleDrawer = () => {
-        setOpenedit(!openedit);
-    };
+  // State for selected issue and item
+  const [selectedIssue, setSelectedIssue] = useState(null);
+  const [selectedItem, setSelectedItem] = useState(null);
 
-    // Function to generate random date and time
-    const generateRandomDate = () => {
-        const start = new Date(2020, 0, 1).getTime();
-        const end = new Date().getTime();
-        const randomDate = new Date(start + Math.random() * (end - start));
-        return randomDate.toLocaleString();
-    };
+  // Toggle functions
+  const toggleDrawer = () => setIsDrawerOpen(!isDrawerOpen);
+  const editToggleDrawer = () => setOpenedit(!openedit);
 
-    const columns = [
-        {
-            title: "#",
-            dataIndex: "id",
-            key: "id",
-        },
-        {
-            title: "Ticket No",
-            dataIndex: "ticketNo",
-            key: "ticketNo",
-        },
-        {
-            title: "Client",
-            dataIndex: "client",
-            key: "client",
-        },
-        {
-            title: "Region",
-            dataIndex: "region",
-            key: "region",
-        },
-        {
-            title: "Issue Classification",
-            dataIndex: "classification",
-            key: "classification",
-        },
-        {
-            title: "Issue Details",
-            dataIndex: "details",
-            key: "details",
-        },
-        {
-            title: "Shift Handled by",
-            dataIndex: "handledBy",
-            key: "handledBy",
-        },
-        {
-            title: "Issue Assigned To",
-            dataIndex: "assignedTo",
-            key: "assignedTo",
-        },
-        {
-            title: "Status",
-            dataIndex: "status",
-            key: "status",
-            render: (status) => (
-                <Tag color={status === "Pending" ? "red" : "green"}>{status}</Tag>
-            ),
-        },
-        {
-            title: "Date",
-            dataIndex: "date",
-            key: "date",
-            render: (date) => <span>{date}</span>,
-        },
-        {
-            title: "Actions",
-            key: "actions",
-            render: () => (
-                <Space>
-                    <Button type="link" icon={<EditOutlined />} onClick={toggleDrawer} />
-                    <Button type="link" icon={<DeleteOutlined />} danger />
-                </Space>
-            ),
-        },
-        {
-            title: "Comment",
-            key: "comment",
-            render: () => <Button type="link" icon={<MessageOutlined />} />,
-        },
-    ];
+  // Handle edit functionality
+  const handleEdit = (record) => {
+    setSelectedIssue(record); // Set the selected row's data
+    setIsDrawerOpen(true); // Open the drawer
+  };
 
-    const dataOne = [
-        {
-            id: 1,
-            ticketNo:"A7X9B3Q5",
-            client: "Mark",
-            region: "Otto",
-            classification: "@mdo",
-            details: "Some issue details",
-            handledBy: "Otto",
-            assignedTo: "Mark",
-            status: "Pending",
-            date: generateRandomDate(),
-        },
-        {
-            id: 2,
-            ticketNo:"A7X9B3Y67",
-            client: "John",
-            region: "Doe",
-            classification: "@jdo",
-            details: "More issue details",
-            handledBy: "Jane",
-            assignedTo: "John",
-            status: "Pending",
-            date: generateRandomDate(),
-        },
-    ];
+  // Handle update issue
+  const handleUpdateIssue = (values) => {
+    dispatch(updateIssue(values)); // Dispatch the update action
+    setIsDrawerOpen(false); // Close the drawer
+  };
 
-    const datatwo = [
-        {
-            id: 1,
-            ticketNo:"A7X9B3YT",
-            client: "Mark",
-            region: "Otto",
-            classification: "@mdo",
-            details: "Some issue details",
-            handledBy: "Otto",
-            assignedTo: "Mark",
-            status: "Completed",
-            date: generateRandomDate(),
-        },
-        {
-            id: 2,
-            ticketNo:"A7X9B3Y67",
-            client: "John",
-            region: "Doe",
-            classification: "@jdo",
-            details: "More issue details",
-            handledBy: "Jane",
-            assignedTo: "John",
-            status: "Completed ",
-            date: generateRandomDate(),
-        },
-    ];
+  // Handle delete functionality
+  const showDeleteModal = (value) => {
+    setSelectedItem(value);
+    setIsOpenDeleteModal(true);
+  };
 
-    return (
-        <div>
-            <div style={{ marginBottom: 20 }}>
+  const handleDelete = (ticketNumber) => {
+    dispatch(deleteRow(ticketNumber));
+  };
 
-                <Row justify="space-between" align="middle" className="px-2">
-                    <Col>
-                        <Title level={3} style={{ color: "#1890ff" }}>Pending Issues</Title>
-                    </Col>
-                    <Col>
-                        <button onClick={editToggleDrawer} className="flex items-center bg-white mb-1 text-[#1890ff] px-4 py-2 rounded-md hover:bg-cyan-100 transition-colors">
-                            <Filter size={18} className="mr-2" />Filter
-                        </button>
-                    </Col>
-                </Row>
-                <Table columns={columns} dataSource={dataOne} rowKey="id" pagination={{ pageSize: 5 }} />
-            </div>
+  // Show issue details in modal
+  const showDetails = (record) => {
+    setSelectedIssue(record);
+    setIsModalOpen(true);
+  };
 
-            <div>
-            <Row justify="space-between" align="middle" className="px-2">
-                    <Col>
-                        <Title  level={3} style={{ color: "#52c41a" }}>Resolved Issues</Title>
-                    </Col>
-                    <Col>
-                        <button className="flex items-center bg-white mb-1 text-[#1890ff] px-4 py-2 rounded-md hover:bg-cyan-100 transition-colors">
-                            <Filter size={18} className="mr-2" />Filter
-                        </button>
-                    </Col>
-                </Row>
-                <Table columns={columns} dataSource={datatwo} rowKey="id" pagination={{ pageSize: 5 }} />
-            </div>
-            
+  // Table columns
+  const columns = [
+    {
+      title: '#',
+      key: 'rowNumber',
+      render: (text, record, index) => index + 1, // Add row number dynamically
+    },
+    { title: 'Ticket No', dataIndex: 'ticketNumber', key: 'ticketNumber' },
+    { title: 'Client', dataIndex: 'Client', key: 'Client' },
+    { title: 'Region', dataIndex: 'Region', key: 'Region' },
+    { title: 'Issue Classification', dataIndex: 'issueClassification', key: 'issueClassification' },
+    {
+      title: 'Issue Details',
+      dataIndex: 'issuedetails',
+      key: 'issuedetails',
+      render: (text, record) => (
+        <Button type="link" onClick={() => showDetails(record)}>
+          {text.length > 15 ? `${text.substring(0, 15)}...` : text}
+        </Button>
+      ),
+    },
+    { title: 'Shift Handled by', dataIndex: 'ShiftHandledBy', key: 'ShiftHandledBy' },
+    { title: 'Issue Assigned To', dataIndex: 'issueAssignedTo', key: 'issueAssignedTo', render: (text) => text || 'Unassigned' },
+    {
+      title: 'Status',
+      dataIndex: 'Status',
+      key: 'Status',
+      render: (status) => (
+        <Tag color={status === 'pending' ? 'red' : status === 'Working on this' ? 'blue' : 'green'}>
+          {status}
+        </Tag>
+      ),
+    },
+    {
+      title: 'SLA Miss',
+      dataIndex: 'slaMiss',
+      key: 'slaMiss',
+      render: (slaMiss) => (
+        <Tag color={slaMiss[0]?.status ? 'red' : 'green'}>
+          {slaMiss[0]?.status ? 'True' : 'False'}
+        </Tag>
+      ),
+    },
+    { title: 'Date', dataIndex: 'date', key: 'date' }, // Add a date field if available in Redux
+    {
+      title: 'Actions',
+      key: 'actions',
+      render: (text, record) => (
+        <Space>
+          <Button type="link" icon={<EditOutlined />} onClick={() => handleEdit(record)} />
+          <Button type="link" icon={<DeleteOutlined />} danger onClick={() => showDeleteModal(record)} />
+        </Space>
+      ),
+    },
+    { title: 'Comment', key: 'comment', render: () => <Button type="link" icon={<MessageOutlined />} /> },
+  ];
 
-            {/* <Drawer
-                title="Editing Issue"
-                placement="right"
-                width={400}
-                onClose={toggleDrawer}
-                open={isDrawerOpen}
+  return (
+    <div>
+      <div style={{ marginBottom: 20 }}>
+        <Row justify="space-between" align="middle" className="px-2">
+          <Col>
+            <Title level={3} style={{ color: '#1890ff' }}>Issues</Title>
+          </Col>
+          <Col>
+            <button
+              onClick={editToggleDrawer}
+              className="flex items-center bg-white mb-1 text-[#1890ff] px-4 py-2 rounded-md hover:bg-cyan-100 transition-colors"
             >
-                <p>Edit issue details here...</p>
-            </Drawer> */}
-            <EditIssueDrawer isOpen={isDrawerOpen} onClose={toggleDrawer} />
-            <FilterDrawer isOpen={openedit} onClose={editToggleDrawer}/>
-        </div >
-    );
+              <Filter size={18} className="mr-2" />Filter
+            </button>
+          </Col>
+        </Row>
+        <Table columns={columns} dataSource={issueLogData} rowKey="ticketNumber" pagination={{ pageSize: 5 }} />
+      </div>
+
+      {/* Edit Drawer */}
+      <EditIssueDrawer
+        isOpen={isDrawerOpen}
+        onClose={() => setIsDrawerOpen(false)}
+        selectedIssue={selectedIssue}
+        updateIssue={handleUpdateIssue}
+      />
+
+      {/* Filter Drawer */}
+      <FilterDrawer isOpen={openedit} onClose={editToggleDrawer} />
+
+      {/* Issue Details Modal */}
+      <Modal
+        title="Issue Details"
+        open={isModalOpen}
+        onCancel={() => setIsModalOpen(false)}
+        footer={[
+          <Button key="close" type="primary" onClick={() => setIsModalOpen(false)}>
+            Close
+          </Button>,
+        ]}
+      >
+        <p><strong>Client:</strong> {selectedIssue?.Client}</p>
+        <p><strong>Region:</strong> {selectedIssue?.Region}</p>
+        <p><strong>Issue Classification:</strong> {selectedIssue?.issueClassification}</p>
+        <p><strong>Handled By:</strong> {selectedIssue?.ShiftHandledBy}</p>
+        <p><strong>Assigned To:</strong> {selectedIssue?.issueAssignedTo || 'Unassigned'}</p>
+        <p><strong>Status:</strong> <Tag color={selectedIssue?.Status === 'pending' ? 'red' : selectedIssue?.Status === 'Working on this' ? 'blue' : 'green'}>
+          {selectedIssue?.Status}
+        </Tag></p>
+        <p><strong>SLA Miss:</strong> <Tag color={selectedIssue?.slaMiss?.status ? 'red' : 'green'}>
+          {selectedIssue?.slaMiss?.status ? 'True' : 'False'}
+        </Tag></p>
+        <p><strong>Date:</strong> {selectedIssue?.date}</p>
+        <p><strong>Details:</strong></p>
+        <p>{selectedIssue?.issuedetails}</p>
+      </Modal>
+
+      {/* Delete Modal */}
+      <IssueLogDeleteModal
+        isModalVisible={isOpendeleteModal}
+        setIsModalVisible={setIsOpenDeleteModal}
+        selectedItem={selectedItem}
+        handleDelete={handleDelete}
+      />
+    </div>
+  );
 };
 
 export default IssueLog;
