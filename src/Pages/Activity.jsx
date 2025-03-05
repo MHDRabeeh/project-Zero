@@ -1,14 +1,15 @@
-
 import { Form, Input, DatePicker, TimePicker, Select, Button, Row, Col } from 'antd';
 import dayjs from 'dayjs'; // For date and time handling
 import { createActivity } from '../features/activitySlice';
 import { useDispatch } from 'react-redux';
+import { XCircle } from 'lucide-react';
 
 const { Option } = Select;
 
 const ActivityForm = () => {
   const [form] = Form.useForm();
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
+
   const onFinish = (values) => {
     console.log('Form values:', values);
     // Convert date and time to the desired format
@@ -17,26 +18,32 @@ const ActivityForm = () => {
       fromDate: values.fromDate.format('D/M/YYYY'),
       fromTime: values.fromTime.format('h:mm A'),
       toDate: values.toDate.format('D/M/YYYY'),
-      id:Date.now(),
+      toTime: values.toTime.format('h:mm A'), // Added To Time
+      id: Date.now(),
       createdAt: dayjs().unix(), // Current timestamp
+      createdBy: { // Static createdBy value
+        fname: 'Michel',
+        lname: 'Smith',
+        email: 'michel.smith@example.com',
+        role: 'Admin',
+      },
     };
     console.log('Formatted values:', formattedValues);
-    // You can now send this data to your backend or state management
-    dispatch(createActivity(formattedValues))
-    form.resetFields(); 
+    // Dispatch the action to create the activity
+    dispatch(createActivity(formattedValues));
+    form.resetFields();
   };
 
   return (
     <div>
       <h1 className="text-2xl font-semibold rounded-t-md pl-3 bg-cyan-50 text-cyan-700 mb-6 border-b-2 border-cyan-200 pb-2 hover:bg-cyan-100 hover:text-cyan-800 transition-colors duration-200">
-        Create New Activity</h1>
+        Create New Activity
+      </h1>
       <Form
         form={form}
         layout="vertical"
         onFinish={onFinish}
-        initialValues={{
-          timeZone: 'EST', // Default time zone
-        }}
+
       >
         {/* Client and Region in the same row */}
         <Row gutter={16}>
@@ -46,7 +53,7 @@ const ActivityForm = () => {
               name="client"
               rules={[{ required: true, message: 'Please select the client!' }]}
             >
-              <Select placeholder="Select client">
+              <Select showSearch allowClear placeholder="Select client">
                 <Option value="MND">MND</Option>
                 <Option value="Client2">Client 2</Option>
                 <Option value="Client3">Client 3</Option>
@@ -59,7 +66,7 @@ const ActivityForm = () => {
               name="region"
               rules={[{ required: true, message: 'Please select the region!' }]}
             >
-              <Select placeholder="Select region">
+              <Select allowClear placeholder="Select region" showSearch>
                 <Option value="Prod">Prod</Option>
                 <Option value="Dev">Dev</Option>
                 <Option value="Test">Test</Option>
@@ -99,7 +106,7 @@ const ActivityForm = () => {
           </Col>
         </Row>
 
-        {/* To Date and Time Zone in the same row */}
+        {/* To Date and To Time in the same row */}
         <Row gutter={16}>
           <Col span={12}>
             <Form.Item
@@ -112,19 +119,28 @@ const ActivityForm = () => {
           </Col>
           <Col span={12}>
             <Form.Item
-              label="Time Zone"
-              name="timeZone"
-              rules={[{ required: true, message: 'Please select the time zone!' }]}
+              label="To Time"
+              name="toTime"
+              rules={[{ required: true, message: 'Please select the to time!' }]}
             >
-              <Select placeholder="Select time zone">
-                <Option value="EST">EST</Option>
-                <Option value="PST">PST</Option>
-                <Option value="CST">CST</Option>
-                <Option value="GMT">GMT</Option>
-              </Select>
+              <TimePicker format="h:mm A" style={{ width: '100%' }} />
             </Form.Item>
           </Col>
         </Row>
+
+        {/* Time Zone */}
+        <Form.Item
+          label="Time Zone"
+          name="timeZone"
+          rules={[{ required: true, message: 'Please select the time zone!' }]}
+        >
+          <Select placeholder="Select time zone" showSearch allowClear>
+            <Option value="EST">EST</Option>
+            <Option value="PST">PST</Option>
+            <Option value="CST">CST</Option>
+            <Option value="GMT">GMT</Option>
+          </Select>
+        </Form.Item>
 
         {/* Action */}
         <Form.Item
@@ -135,58 +151,23 @@ const ActivityForm = () => {
           <Input placeholder="Enter action" />
         </Form.Item>
 
-        {/* Created By */}
-        <Form.Item
-          label="Created By"
-          name="createdBy"
-          rules={[{ required: true, message: 'Please input the created by details!' }]}
-        >
-          <Input.Group>
-            <Row gutter={16}>
-              <Col span={12}>
-                <Form.Item
-                  name={['createdBy', 'fname']}
-                  rules={[{ required: true, message: 'Please input the first name!' }]}
-                >
-                  <Input placeholder="First Name" />
-                </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Form.Item
-                  name={['createdBy', 'lname']}
-                  rules={[{ required: true, message: 'Please input the last name!' }]}
-                >
-                  <Input placeholder="Last Name" />
-                </Form.Item>
-              </Col>
-            </Row>
-            <Row gutter={16}>
-              <Col span={12}>
-                <Form.Item
-                  name={['createdBy', 'email']}
-                  rules={[{ required: true, message: 'Please input the email!' }]}
-                >
-                  <Input placeholder="Email" />
-                </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Form.Item
-                  name={['createdBy', 'role']}
-                  rules={[{ required: true, message: 'Please input the role!' }]}
-                >
-                  <Input placeholder="Role" />
-                </Form.Item>
-              </Col>
-            </Row>
-          </Input.Group>
-        </Form.Item>
-
-        {/* Submit Button */}
-        <Form.Item>
-          <Button type="primary" htmlType="submit">
-            Submit
+        <div className='flex  justify-end space-x-6 '>
+          <Button
+            className="!bg-gray-100 !text-gray-700 !px-4 py-2 !rounded-md !hover:bg-gray-200 !transition-colors"
+            onClick={() => form.resetFields()}
+            icon={<XCircle size={18} />}
+          >
+            Cancel
           </Button>
-        </Form.Item>
+
+          {/* Submit Button */}
+          <Form.Item>
+            <Button type="primary" htmlType="submit">
+              Submit
+            </Button>
+          </Form.Item>
+        </div>
+
       </Form>
     </div>
   );

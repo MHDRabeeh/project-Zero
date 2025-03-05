@@ -105,6 +105,7 @@ export const issueLog = [
     ShiftHandledBy: "Rishin",
     issueAssignedTo: "Anjana",
     Status: "resolved",
+    date:"12/10/23",
     slaMiss: [
       {
         status: true,
@@ -242,7 +243,7 @@ export const activityLog = [
         fromDate: "27/1/2025",
         fromTime: "3.00 PM",
         toDate: "28/1/2025",
-        fromTime: "6.00 PM",
+        toTime: "6.00 PM",
         TimeZone: "EST",
       },
     ],
@@ -260,7 +261,7 @@ export const activityLog = [
         fromDate: "29/1/2025",
         fromTime: "4.00 PM",
         toDate: "30/1/2025",
-        fromTime: "8.00 PM",
+        toTime: "8.00 PM",
         TimeZone: "MST",
       },
     ],

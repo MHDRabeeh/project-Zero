@@ -1,22 +1,32 @@
-import  { useState } from "react";
-import { Table, Button, Modal, Tag } from "antd";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Table, Button, Modal, Tag, Typography, Row, Col, Badge, Space, Descriptions, Divider } from "antd";
+import { Filter,  Trash  } from "lucide-react";
+import {MessageOutlined,DeleteOutlined} from "@ant-design/icons" 
+
+import FilterDrawer from "../components/FilterDrawer";
+import { applyFilter, deleteRow } from "../features/issueSlice";
+import IssueLogDeleteModal from "../components/modal/IssueLogDeleteModal";
+
+const { Title, Text } = Typography;
 
 const SlaSearch = () => {
   const dispatch = useDispatch();
   const issueLogData = useSelector((state) => state.issueLogs);
-  console.log(issueLogData,"filtered data");
-  
 
-  // State for managing modal visibility and selected SLA details
+  // State for managing modals and selected data
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isIssueDetailsModalOpen, setIsIssueDetailsModalOpen] = useState(false);
+  const [isOpendeleteModal, setIsOpenDeleteModal] = useState(false);
   const [selectedSlaDetails, setSelectedSlaDetails] = useState(null);
+  const [selectedIssue, setSelectedIssue] = useState(null);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [openedit, setOpenedit] = useState(false); // For filter drawer
 
   // Filter data to include only rows where slaMiss.status is true
   const filteredData = issueLogData.filter(
     (issue) => issue.slaMiss && issue.slaMiss[0]?.status === true
   );
-  
 
   // Show SLA details in modal
   const showSlaDetails = (slaMiss) => {
@@ -24,16 +34,58 @@ const SlaSearch = () => {
     setIsModalOpen(true);
   };
 
+  // Show issue details in modal
+  const showIssueDetails = (record) => {
+    setSelectedIssue(record);
+    setIsIssueDetailsModalOpen(true);
+  };
+
+  // Toggle filter drawer
+  const editToggleDrawer = () => setOpenedit(!openedit);
+
+  // Apply filters
+  const onApplyFilters = (values) => {
+    dispatch(applyFilter(values));
+  };
+
+  // Handle delete functionality
+  const showDeleteModal = (value) => {
+    setSelectedItem(value);
+    setIsOpenDeleteModal(true);
+  };
+
+  const handleDelete = (ticketNumber) => {
+    dispatch(deleteRow(ticketNumber));
+  };
+
   // Table columns
   const columns = [
     {
       title: "#",
       key: "rowNumber",
-      render: (text, record, index) => index + 1, // Add row number dynamically
+      render: (text, record, index) => index + 1,
     },
     { title: "Ticket No", dataIndex: "ticketNumber", key: "ticketNumber" },
-    { title: "Client", dataIndex: "Client", key: "Client" },
-    { title: "Region", dataIndex: "Region", key: "Region" },
+    {
+      title: "Client",
+      dataIndex: "Client",
+      key: "Client",
+      render: (text) => (
+        <div className="whitespace-nowrap overflow-hidden text-ellipsis">
+          {text}
+        </div>
+      ),
+    },
+    {
+      title: "Region",
+      dataIndex: "Region",
+      key: "Region",
+      render: (text) => (
+        <div className="whitespace-nowrap overflow-hidden text-ellipsis">
+          {text}
+        </div>
+      ),
+    },
     {
       title: "Issue Classification",
       dataIndex: "issueClassification",
@@ -43,7 +95,11 @@ const SlaSearch = () => {
       title: "Issue Details",
       dataIndex: "issuedetails",
       key: "issuedetails",
-      render: (text) => (text.length > 15 ? `${text.substring(0, 15)}...` : text),
+      render: (text, record) => (
+        <Button type="link" onClick={() => showIssueDetails(record)}>
+          {text.length > 15 ? `${text.substring(0, 15)}...` : text}
+        </Button>
+      ),
     },
     { title: "Shift Handled by", dataIndex: "ShiftHandledBy", key: "ShiftHandledBy" },
     {
@@ -63,6 +119,44 @@ const SlaSearch = () => {
       ),
     },
     {
+      title: "SLA Miss",
+      dataIndex: "slaMiss",
+      key: "slaMiss",
+      render: (slaMiss) => (
+        <Tag color={slaMiss[0]?.status ? "red" : "green"}>
+          {slaMiss[0]?.status ? "True" : "False"}
+        </Tag>
+      ),
+    },
+    {
+      title: "Current_DBLatency",
+      dataIndex: "slaMiss",
+      key: "slaMiss",
+      render: (currentDbLatency) => {
+        console.log(currentDbLatency[0]?.currentDbLatency, "this is current db latency");
+        return currentDbLatency[0]?.currentDbLatency || "--";
+      },
+    },
+    {
+      title: "Date",
+      dataIndex: "date",
+      key: "date",
+      render: (text) => (
+        <div className="whitespace-nowrap overflow-hidden text-ellipsis">
+          {text}
+        </div>
+      ),
+    },
+    {
+      title: "Actions",
+      key: "actions",
+      render: (text, record) => (
+        <Space>
+          <Button type="link" icon={<DeleteOutlined />} danger onClick={() => showDeleteModal(record)} />
+        </Space>
+      ),
+    },
+    {
       title: "SLA Details",
       key: "slaDetails",
       render: (text, record) => (
@@ -75,15 +169,100 @@ const SlaSearch = () => {
 
   return (
     <div>
-      <h2>SLA Search</h2>
-      <Table
-        columns={columns}
-        dataSource={filteredData}
-        rowKey="ticketNumber"
-        pagination={{ pageSize: 5 }}
-      />
+      <style>
+        {`
+          .ant-table-thead > tr > th {
+            white-space: nowrap; /* Prevent text wrapping in headers */
+            overflow: hidden; /* Hide overflow text */
+            text-overflow: ellipsis; /* Show ellipsis for overflow text */
+          }
+        `}
+      </style>
 
-      {/* Modal for SLA Details */}
+      <div className=" " style={{ marginBottom: 10 }}>
+        <Row justify="space-between" align="middle" className="px-2">
+          <Col>
+            <Title level={3} style={{ color: "#1890ff" }}>SLA Search</Title>
+          </Col>
+          <Col>
+            <button
+              onClick={editToggleDrawer}
+              className="flex items-center bg-white mb-1 text-[#1890ff] px-4 py-2 rounded-md hover:bg-cyan-100 transition-colors"
+            >
+              <Filter size={18} className="mr-2" />Filter
+            </button>
+          </Col>
+        </Row>
+        <div style={{ overflowX: "auto" }}>
+          <Table
+            columns={columns}
+            dataSource={filteredData}
+            rowKey="ticketNumber"
+            pagination={{ pageSize: 10 }}
+            scroll={{ x: true }}
+          />
+        </div>
+      </div>
+
+      {/* Filter Drawer */}
+      <FilterDrawer onApplyFilters={onApplyFilters} isOpen={openedit} onClose={editToggleDrawer} />
+
+      {/* Issue Details Modal */}
+      <Modal
+        title="Issue Details"
+        open={isIssueDetailsModalOpen}
+        onCancel={() => setIsIssueDetailsModalOpen(false)}
+        footer={[
+          <Button key="close" type="primary" onClick={() => setIsIssueDetailsModalOpen(false)}>
+            Close
+          </Button>,
+        ]}
+      >
+        {selectedIssue && (
+          <Descriptions bordered column={1} size="middle">
+            <Descriptions.Item label={<Text strong>Client</Text>}>
+              <Text>{selectedIssue?.Client}</Text>
+            </Descriptions.Item>
+            <Descriptions.Item label={<Text strong>Region</Text>}>
+              <Text>{selectedIssue?.Region}</Text>
+            </Descriptions.Item>
+            <Descriptions.Item label={<Text strong>Issue Classification</Text>}>
+              <Text>{selectedIssue?.issueClassification}</Text>
+            </Descriptions.Item>
+            <Descriptions.Item label={<Text strong>Handled By</Text>}>
+              <Text>{selectedIssue?.ShiftHandledBy}</Text>
+            </Descriptions.Item>
+            <Descriptions.Item label={<Text strong>Assigned To</Text>}>
+              <Text>{selectedIssue?.issueAssignedTo || "Unassigned"}</Text>
+            </Descriptions.Item>
+            <Descriptions.Item label={<Text strong>Status</Text>}>
+              <Tag
+                color={selectedIssue?.Status === "pending" ? "red"
+                  : selectedIssue?.Status === "Working on this" ? "blue"
+                    : "green"}
+              >
+                {selectedIssue?.Status}
+              </Tag>
+            </Descriptions.Item>
+            <Descriptions.Item label={<Text strong>SLA Miss</Text>}>
+              <Tag color={selectedIssue?.slaMiss?.status ? "red" : "green"}>
+                {selectedIssue?.slaMiss?.status ? "True" : "False"}
+              </Tag>
+            </Descriptions.Item>
+            <Descriptions.Item label={<Text strong>Current DB Latency</Text>}>
+              <Text>{selectedIssue?.slaMiss[0]?.currentDbLatency || "N/A"}</Text>
+            </Descriptions.Item>
+            <Descriptions.Item label={<Text strong>Date</Text>}>
+              <Text>{selectedIssue?.date}</Text>
+            </Descriptions.Item>
+          </Descriptions>
+        )}
+        <Divider />
+        <Text strong>Details:</Text>
+        <p style={{ marginTop: 8 }}>{selectedIssue?.issuedetails}</p>
+      </Modal>
+
+      {/* SLA Details Modal */}
       <Modal
         title="SLA Details"
         open={isModalOpen}
@@ -102,6 +281,14 @@ const SlaSearch = () => {
           </div>
         )}
       </Modal>
+
+      {/* Delete Modal */}
+      <IssueLogDeleteModal
+        isModalVisible={isOpendeleteModal}
+        setIsModalVisible={setIsOpenDeleteModal}
+        selectedItem={selectedItem}
+        handleDelete={handleDelete}
+      />
     </div>
   );
 };

@@ -1,22 +1,54 @@
 import React, { useState } from 'react';
-import { Table, Input } from 'antd';
+import { Table, Input, Button, Drawer, Form, Select, DatePicker, Row, Col } from 'antd';
 import { useSelector } from 'react-redux';
+import FilterDrawer from '../components/Drawer/ActivityFilterDrawer';
+import Title from 'antd/es/typography/Title';
+import { Filter } from 'lucide-react';
+
+const { Option } = Select;
 
 const ActivityLog = () => {
   const activityLogs = useSelector((state) => state.activityLogs);
-  const [searchText, setSearchText] = useState('');
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [filters, setFilters] = useState({
+    client: '',
+    region: '',
+    mailSub: '',
+    fromDate: null,
+    toDate: null,
+    timeZone: '',
+    action: '',
+    createdBy: '',
+  });
 
-  // Handle search input change
-  const handleSearch = (e) => {
-    setSearchText(e.target.value);
+  const handleApplyFilters = (appliedFilters) => {
+    setFilters(appliedFilters);
+    setIsFilterOpen(false);
   };
 
-  // Filter activity logs based on search text
+  const handleResetFilters = () => {
+    setFilters({
+      client: '',
+      region: '',
+      mailSub: '',
+      fromDate: null,
+      toDate: null,
+      timeZone: '',
+      action: '',
+      createdBy: '',
+    });
+  };
+
   const filteredLogs = activityLogs.filter((log) => {
     return (
-      log.client.toLowerCase().includes(searchText.toLowerCase()) ||
-      log.region.toLowerCase().includes(searchText.toLowerCase()) ||
-      log.mailSub.toLowerCase().includes(searchText.toLowerCase())
+      (filters.client ? log.client.toLowerCase().includes(filters.client.toLowerCase()) : true) &&
+      (filters.region ? log.region.toLowerCase().includes(filters.region.toLowerCase()) : true) &&
+      (filters.mailSub ? log.mailSub.toLowerCase().includes(filters.mailSub.toLowerCase()) : true) &&
+      (filters.fromDate ? new Date(log.fromDate) >= new Date(filters.fromDate) : true) &&
+      (filters.toDate ? new Date(log.toDate) <= new Date(filters.toDate) : true) &&
+      (filters.timeZone ? log.timeZone.toLowerCase().includes(filters.timeZone.toLowerCase()) : true) &&
+      (filters.action ? log.action.toLowerCase().includes(filters.action.toLowerCase()) : true) &&
+      (filters.createdBy ? log.createdBy.fname.toLowerCase().includes(filters.createdBy.toLowerCase()) || log.createdBy.lname.toLowerCase().includes(filters.createdBy.toLowerCase()) : true)
     );
   });
 
@@ -52,6 +84,11 @@ const ActivityLog = () => {
       key: 'toDate',
     },
     {
+      title: 'To Time',
+      dataIndex: 'toTime',
+      key: 'toTime',
+    },
+    {
       title: 'Time Zone',
       dataIndex: 'timeZone',
       key: 'timeZone',
@@ -75,23 +112,41 @@ const ActivityLog = () => {
       title: 'Created At',
       dataIndex: 'createdAt',
       key: 'createdAt',
-      render: (createdAt) => new Date(createdAt * 1000).toLocaleString(), // Convert timestamp to readable date
+      render: (createdAt) => new Date(createdAt * 1000).toLocaleString(),
     },
   ];
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold rounded-t-md pl-3 bg-cyan-50 text-cyan-700 mb-1.5 border-b-2 border-cyan-200 pb-2 hover:bg-cyan-100 hover:text-cyan-800 transition-colors duration-200">
-        Activity Log</h1>
-      {/* Search Input */}
-      <Input
-        placeholder="Search by Client, Region, or Mail Subject"
-        value={searchText}
-        onChange={handleSearch}
-        style={{ marginBottom: 12 }}
-      />
-      {/* Table with filtered data */}
+       <style>
+        {`
+          .ant-table-thead > tr > th {
+            white-space: nowrap; /* Prevent text wrapping in headers */
+            overflow: hidden; /* Hide overflow text */
+            text-overflow: ellipsis; /* Show ellipsis for overflow text */
+          }
+        `}
+      </style>
+      <Row justify="space-between" align="middle" className="px-2">
+        <Col>
+          <Title level={3} style={{ color: '#1890ff' }}>Activity Logs</Title>
+        </Col>
+        <Col>
+          <button
+          onClick={() => setIsFilterOpen(true)}
+            className="flex items-center bg-white mb-1 text-[#1890ff] px-4 py-2 rounded-md hover:bg-cyan-100 transition-colors"
+          >
+            <Filter size={18} className="mr-2" />Filter
+          </button>
+        </Col>
+      </Row>
       <Table dataSource={filteredLogs} columns={columns} />
+      <FilterDrawer
+        isOpen={isFilterOpen}
+        onClose={() => setIsFilterOpen(false)}
+        onApplyFilters={handleApplyFilters}
+        onResetFilters={handleResetFilters}
+      />
     </div>
   );
 };

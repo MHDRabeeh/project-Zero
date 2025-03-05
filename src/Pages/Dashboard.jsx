@@ -2,7 +2,7 @@
 import { BellOutlined, CheckCircleOutlined, DeleteOutlined, SearchOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, Input, Card, List, Typography, Row, Col } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
-import { deleteUpdates, createUpdate,clearAllUpdates } from '../features/impUpdateSlice';
+import { deleteUpdates, createUpdate, clearAllUpdates } from '../features/impUpdateSlice';
 import { useState } from 'react';
 import DeleteModal from '../components/modal/DeleteModal';
 import CreateUpdateDrawer from '../components/Drawer/CreateUpdateDrawer';
@@ -34,17 +34,20 @@ const Dashboard = () => {
     }
 
     const handleMarkAllAsRead = () => {
-       dispatch(clearAllUpdates())
+        dispatch(clearAllUpdates())
         // Dispatch an action to mark all updates as read
     };
 
     function handleUpdateSubmit(values) {
+        console.log(values);
+        
         const newUpdate = {
             id: Date.now(), // Generate a unique ID
             UpaterName: values.name, // Automatically included user name
-            designation: values.designation, // User's designation
+            designation: "Dev", // User's designation
             Update: values.update, // Update content
             Date: values.date, // Automatically included current date
+            conformedBy:values.conformedBy
         };
 
         dispatch(createUpdate(newUpdate))
@@ -60,6 +63,7 @@ const Dashboard = () => {
         item.designation.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.Update.toLowerCase().includes(searchTerm.toLowerCase())
     );
+    
     console.log(isDrawerVisible);
 
     return (
@@ -108,9 +112,16 @@ const Dashboard = () => {
                         boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
                     }}
                 >
-                    <Title level={4} style={{ color: '#0050b3', marginBottom: 24 }}>
-                        Important Updates
-                    </Title>
+
+                    <div className='flex justify-between'>
+                        <Title level={4} style={{ color: '#0050b3', marginBottom: 24 }}>
+                            Important Updates
+                        </Title>
+
+                        <div>asfsadf</div>
+
+                    </div>
+
 
                     {/* Search Bar */}
                     <Row gutter={16} style={{ marginBottom: 24 }}>
@@ -180,7 +191,7 @@ const Dashboard = () => {
                                                 {item.UpaterName} ({item.designation}) - {item.Date}
                                             </Text>
                                         }
-                                        description={<Text type="secondary">{item.Update}</Text>}
+                                        description={<Text type="secondary">{item.Update} <span className='text-black text-xs font-medium'> {"Conformed By"} : {item.conformedBy}</span></Text>}
                                     />
                                 </List.Item>
                             )}

@@ -1,5 +1,6 @@
 
-import { Drawer, Form, Input, Button} from 'antd';
+import { Drawer, Form, Input, Button, Select } from 'antd';
+import { Option } from 'antd/es/mentions';
 
 const CreateUpdateDrawer = ({ visible, onClose, onSubmit, userName }) => {
 
@@ -15,48 +16,56 @@ const CreateUpdateDrawer = ({ visible, onClose, onSubmit, userName }) => {
         onSubmit(newUpdate); // Pass the updated values to the parent component
         form.resetFields(); // Reset form fields
         onClose(false); // Close the drawer
-      
+
     };
 
     return (
         <>
-     
-        <Drawer
-            title="Create New Update"
-            width={400}
-            onClose={()=>onClose(false)}
-            open={visible}
-            footer={
-                <div style={{ textAlign: 'right' }}>
-                    <Button onClick={()=>onClose(false)} style={{ marginRight: 8 }}>
-                        Cancel
-                    </Button>
-                    <Button type="primary" onClick={() => form.submit()}>
-                        Submit
-                    </Button>
-                </div>
-            }
-        >
-            <Form form={form} layout="vertical" onFinish={handleSubmit}>
-                {/* Designation Field */}
-                <Form.Item
-                    name="designation"
-                    label="Designation"
-                    rules={[{ required: true, message: 'Please enter your designation!' }]}
-                >
-                    <Input placeholder="Enter your designation" />
-                </Form.Item>
 
-                {/* Update Field */}
-                <Form.Item
-                    name="update"
-                    label="Update"
-                    rules={[{ required: true, message: 'Please enter the update!' }]}
-                >
-                    <Input.TextArea placeholder="Enter the update" rows={4} />
-                </Form.Item>
-            </Form>
-        </Drawer>
+            <Drawer
+                title="Create New Update"
+                width={400}
+                onClose={() => onClose(false)}
+                open={visible}
+                footer={
+                    <div style={{ textAlign: 'right' }}>
+                        <Button onClick={() => onClose(false)} style={{ marginRight: 8 }}>
+                            Cancel
+                        </Button>
+                        <Button type="primary" onClick={() => form.submit()}>
+                            Submit
+                        </Button>
+                    </div>
+                }
+            >
+                <Form form={form} layout="vertical" onFinish={handleSubmit}>
+                    {/* Designation Field */}
+
+
+                    {/* Update Field */}
+                    <Form.Item
+                        name="update"
+                        label=" New Update"
+                        rules={[{ required: true, message: 'Please enter the update!' }]}
+                    >
+                        <Input.TextArea placeholder="Enter the update" rows={4} />
+                    </Form.Item>
+                    <Form.Item
+                        name="conformedBy"
+                        label="Conformed by"
+                        rules={[{ required: true, message: 'Please select Conformed by' }]}
+                    >
+                        <Select
+
+                        >
+                            <Option value="syed">syed</Option>
+                            <Option value="Ram">Ram</Option>
+                            <Option value="shamil">shamil</Option>
+                            <Option value="john">john</Option>
+                        </Select>
+                    </Form.Item>
+                </Form>
+            </Drawer>
         </>
     );
 };

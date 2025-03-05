@@ -1,20 +1,23 @@
-// import { useState } from "react";
+import { useState } from "react";
 import { Form, Input, Select, Button, Row, Col } from "antd";
 import { CheckCircle, XCircle } from "lucide-react";
-import { addIssueData } from '../features/issueSlice'
+import { addIssueData } from '../features/issueSlice';
 import { useDispatch } from "react-redux";
+import dayjs from 'dayjs';
 
 const { TextArea } = Input;
 
 const AddTableDataForm = () => {
-
     const [form] = Form.useForm();
+    const [selectedRegion, setSelectedRegion] = useState(false);
 
     const clients = ["Client A", "Client B", "Client C"];
-    const regions = ["Region 1", "Region 2", "Region 3"];
-    const dispatch = useDispatch()
+    const regions = ["Region 1", "Region 2", "Region 3", "Prod"];
+    const dispatch = useDispatch();
+
 
     const handleSubmit = (values) => {
+        const today = dayjs().format('YYYY-MM-DD');
         const addnewissue = {
             id: Date.now(),
             ticketNumber: `HYT${Date.now()}`,
@@ -24,13 +27,15 @@ const AddTableDataForm = () => {
             issuedetails: values.issueDetails,
             ShiftHandledBy: "Michel",
             Status: "pending",
+            date:today,
             slaMiss: [
                 {
                     status: false,
-                    currentDbLatency: null,
+                    currentDbLatency: values.currentDbLatency || null, 
                     maxDblatency: null,
                     sladetails: null,
-                }],
+                }
+            ],
             commentsTotal: 2,
             Comment: [
                 {
@@ -46,12 +51,10 @@ const AddTableDataForm = () => {
                     Date: "23/12/2024",
                 },
             ],
+        };
+        dispatch(addIssueData(addnewissue));
 
-        }
-        dispatch(addIssueData(addnewissue))
-
-
-        alert("Form submitted successfully!")
+        alert("Form submitted successfully!");
         form.resetFields();
     };
 
@@ -59,6 +62,17 @@ const AddTableDataForm = () => {
         form.resetFields();
         alert("Form canceled.");
     };
+
+    const handleRegionChange = (value) => {
+        if(value==="Prod"){
+            setSelectedRegion(true);
+        }else{
+            setSelectedRegion(false)
+        }
+        
+    };
+
+  
 
     return (
         <div className="flex flex-col bg-white rounded-md p-6 shadow-lg border border-cyan-100">
@@ -81,7 +95,6 @@ const AddTableDataForm = () => {
                             rules={[{ required: true, message: "Client is required" }]}
                         >
                             <Select showSearch placeholder="Select Client">
-
                                 {clients.map((client, index) => (
                                     <Select.Option key={index} value={client}>
                                         {client}
@@ -97,7 +110,7 @@ const AddTableDataForm = () => {
                             name="region"
                             rules={[{ required: true, message: "Region is required" }]}
                         >
-                            <Select showSearch placeholder="Select Region">
+                            <Select showSearch placeholder="Select Region" onChange={handleRegionChange}>
                                 {regions.map((region, index) => (
                                     <Select.Option key={index} value={region}>
                                         {region}
@@ -107,6 +120,17 @@ const AddTableDataForm = () => {
                         </Form.Item>
                     </Col>
                 </Row>
+
+                {/* Current DB Latency */}
+              
+                    <Form.Item
+                        label="Current DB Latency"
+                        name="currentDbLatency"
+                        rules={[{ required: selectedRegion, message: "Current DB Latency is required for Prod" }]}
+                    >
+                        <Input type="number" placeholder="Enter Current DB Latency" />
+                    </Form.Item>
+            
 
                 {/* Issue Classification */}
                 <Form.Item
@@ -126,12 +150,11 @@ const AddTableDataForm = () => {
                     <TextArea rows={3} placeholder="Enter Issue Details" />
                 </Form.Item>
 
-
                 {/* Buttons */}
                 <div className="flex justify-end space-x-4">
                     {/* Cancel Button */}
                     <Button
-                        className="!bg-gray-100 !text-gray-700 !px-4 py-2 !rounded-md !hover:bg-gray-200 !transition-colors "
+                        className="!bg-gray-100 !text-gray-700 !px-4 py-2 !rounded-md !hover:bg-gray-200 !transition-colors"
                         onClick={handleCancel}
                         icon={<XCircle size={18} />}
                     >
@@ -141,7 +164,7 @@ const AddTableDataForm = () => {
                     {/* Cyan Themed Submit Button */}
                     <Button
                         htmlType="submit"
-                        className=" !bg-cyan-500 !text-white !px-4 !py-2 !rounded-md hover:!bg-cyan-600 !transition-colors !flex !items-center"
+                        className="!bg-cyan-500 !text-white !px-4 !py-2 !rounded-md hover:!bg-cyan-600 !transition-colors !flex !items-center"
                     >
                         <CheckCircle size={18} className="mr-2" />
                         Submit

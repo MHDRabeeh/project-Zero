@@ -1,13 +1,18 @@
 import { useEffect, useState } from 'react';
 import { Drawer, Form, Input, Select, Button, Modal, DatePicker } from 'antd';
-import dayjs from 'dayjs'; // For handling date formatting
+import dayjs from 'dayjs'; 
 
 const { Option } = Select;
 
 const EditIssueDrawer = ({ isOpen, onClose, selectedIssue, updateIssue }) => {
+  console.log(selectedIssue, "selected issues");
+
   const [form] = Form.useForm();
   const [isSlaMissModalVisible, setIsSlaMissModalVisible] = useState(false);
   const [updatedslamissvalues, setUpdatedSlaMissValue] = useState([]);
+
+  // Watch the Status field value
+  const status = Form.useWatch('Status', form);
 
   // Set form values when selectedIssue changes
   useEffect(() => {
@@ -18,6 +23,10 @@ const EditIssueDrawer = ({ isOpen, onClose, selectedIssue, updateIssue }) => {
         date: selectedIssue.date ? dayjs(selectedIssue.date) : null,
       };
       form.setFieldsValue(formattedIssue);
+      // Initialize updatedslamissvalues with existing SLA Miss values
+      if (selectedIssue.slaMiss) {
+        setUpdatedSlaMissValue(selectedIssue.slaMiss);
+      }
     }
   }, [selectedIssue, form]);
 
@@ -32,7 +41,7 @@ const EditIssueDrawer = ({ isOpen, onClose, selectedIssue, updateIssue }) => {
       date: values.date ? values.date.format('YYYY-MM-DD') : null,
     };
 
-    if (updatedslamissvalues) {
+    if (updatedslamissvalues.length > 0) {
       updateIssue({ ...formattedValues, slaMiss: updatedslamissvalues });
       console.log({ ...formattedValues, slaMiss: updatedslamissvalues }, 'updatedslamissvalues');
     } else {
@@ -46,12 +55,15 @@ const EditIssueDrawer = ({ isOpen, onClose, selectedIssue, updateIssue }) => {
       setIsSlaMissModalVisible(true);
     } else {
       // If SLA Miss is set to false, reset the SLA Miss details
+      setUpdatedSlaMissValue([]);
       form.setFieldsValue({ slaMiss: [{ status: false, currentDbLatency: null, maxDblatency: null, sladetails: null }] });
     }
   };
 
   const handleSlaMissModalOk = (values) => {
-    setUpdatedSlaMissValue([{ status: true, ...values }]);
+    const newSlaMissValues = [{ status: true, ...values }];
+    setUpdatedSlaMissValue(newSlaMissValues);
+    form.setFieldsValue({ slaMiss: newSlaMissValues });
     setIsSlaMissModalVisible(false);
   };
 
@@ -64,7 +76,7 @@ const EditIssueDrawer = ({ isOpen, onClose, selectedIssue, updateIssue }) => {
 
         {/* Client Dropdown */}
         <Form.Item name="Client" label="Client">
-          <Select placeholder="Select a client">
+          <Select placeholder="Select a client" showSearch >
             {clients.map((client) => (
               <Option key={client} value={client}>
                 {client}
@@ -75,7 +87,7 @@ const EditIssueDrawer = ({ isOpen, onClose, selectedIssue, updateIssue }) => {
 
         {/* Region Dropdown */}
         <Form.Item name="Region" label="Region">
-          <Select placeholder="Select a region">
+          <Select placeholder="Select a region" showSearch>
             {regions.map((region) => (
               <Option key={region} value={region}>
                 {region}
@@ -108,12 +120,19 @@ const EditIssueDrawer = ({ isOpen, onClose, selectedIssue, updateIssue }) => {
             <Option value="resolved">Resolved</Option>
           </Select>
         </Form.Item>
-        <Form.Item name={['slaMiss', 0, 'status']} label="SLA Miss">
+
+        {/* Conditionally hide SLA Miss field when Status is "resolved" */}
+        <Form.Item
+          name={['slaMiss', 0, 'status']}
+          label="SLA Miss"
+          className={status!=='resolved'&&'hidden' }
+        >
           <Select onChange={handleSlaMissChange}>
             <Option value={false}>False</Option>
             <Option value={true}>True</Option>
           </Select>
         </Form.Item>
+
         <Form.Item>
           <Button type="primary" htmlType="submit">
             Save

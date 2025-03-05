@@ -15,7 +15,7 @@ const impUpdateSlice = createSlice({
     },
     createUpdate:(state,action)=>{
      console.log(action.payload);
-     state.push(action.payload)
+     state.unshift(action.payload)
      
     }
   },

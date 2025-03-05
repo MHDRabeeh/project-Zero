@@ -1,55 +1,41 @@
-import  { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { EditOutlined, DeleteOutlined, MessageOutlined } from '@ant-design/icons';
-import { Table, Button, Typography, Space, Tag, Row, Col, Modal } from 'antd';
+import { Table, Button, Typography, Space, Tag, Row, Col, Modal, Descriptions, Divider, Badge } from 'antd';
 import EditIssueDrawer from '../components/EditeIssueDrawer';
 import { Filter } from 'lucide-react';
 import FilterDrawer from '../components/FilterDrawer';
-import { deleteRow, updateIssue } from '../features/issueSlice';
+import { applyFilter, deleteRow, updateIssue } from '../features/issueSlice';
 import IssueLogDeleteModal from '../components/modal/IssueLogDeleteModal';
 
-
 const { Title } = Typography;
+const { Text } = Typography;
 
 const IssueLog = () => {
   const dispatch = useDispatch();
-  useEffect(()=>{
-   
-  },[])
   const issueLogData = useSelector((state) => state.issueLogs);
-  const filteredData = issueLogData.filter((issue) =>  issue.slaMiss[0]?.status === false);
-  console.log(issueLogData,"issue log data");
-  console.log(filteredData,"filtered data");
-  
-  
-   
-  // State for managing drawer and modal visibility
+  const filteredData = issueLogData.filter((issue) => issue.slaMiss[0]?.status === false);
+
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [openedit, setOpenedit] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isOpendeleteModal, setIsOpenDeleteModal] = useState(false);
-
-  // State for selected issue and item
   const [selectedIssue, setSelectedIssue] = useState(null);
   const [selectedItem, setSelectedItem] = useState(null);
 
-  // Toggle functions
   const toggleDrawer = () => setIsDrawerOpen(!isDrawerOpen);
   const editToggleDrawer = () => setOpenedit(!openedit);
 
-  // Handle edit functionality
   const handleEdit = (record) => {
-    setSelectedIssue(record); // Set the selected row's data
-    setIsDrawerOpen(true); // Open the drawer
+    setSelectedIssue(record);
+    setIsDrawerOpen(true);
   };
 
-  // Handle update issue
   const handleUpdateIssue = (values) => {
-    dispatch(updateIssue(values)); // Dispatch the update action
-    setIsDrawerOpen(false); // Close the drawer
+    dispatch(updateIssue(values));
+    setIsDrawerOpen(false);
   };
 
-  // Handle delete functionality
   const showDeleteModal = (value) => {
     setSelectedItem(value);
     setIsOpenDeleteModal(true);
@@ -59,22 +45,42 @@ const IssueLog = () => {
     dispatch(deleteRow(ticketNumber));
   };
 
-  // Show issue details in modal
   const showDetails = (record) => {
     setSelectedIssue(record);
     setIsModalOpen(true);
   };
 
-  // Table columns
+  const onApplyFilters = (values) => {
+    dispatch(applyFilter(values));
+  };
+
   const columns = [
     {
       title: '#',
       key: 'rowNumber',
-      render: (text, record, index) => index + 1, // Add row number dynamically
+      render: (text, record, index) => index + 1,
     },
     { title: 'Ticket No', dataIndex: 'ticketNumber', key: 'ticketNumber' },
-    { title: 'Client', dataIndex: 'Client', key: 'Client' },
-    { title: 'Region', dataIndex: 'Region', key: 'Region' },
+    {
+      title: 'Client',
+      dataIndex: 'Client',
+      key: 'Client',
+      render: (text) => (
+        <div className="whitespace-nowrap overflow-hidden text-ellipsis">
+          {text}
+        </div>
+      ),
+    },
+    {
+      title: 'Region',
+      dataIndex: 'Region',
+      key: 'Region',
+      render: (text) => (
+        <div className="whitespace-nowrap overflow-hidden text-ellipsis">
+          {text}
+        </div>
+      ),
+    },
     { title: 'Issue Classification', dataIndex: 'issueClassification', key: 'issueClassification' },
     {
       title: 'Issue Details',
@@ -108,7 +114,22 @@ const IssueLog = () => {
         </Tag>
       ),
     },
-    { title: 'Date', dataIndex: 'date', key: 'date' }, // Add a date field if available in Redux
+    {
+      title: 'Current_DBLatency',
+      dataIndex: 'slaMiss',
+      key: 'slaMiss',
+      render: (currentDbLatency) => {
+        console.log(currentDbLatency[0]?.currentDbLatency, "this is current db latency");
+        return (currentDbLatency[0]?.currentDbLatency || "--");
+      },
+    },
+    {
+      title: 'Date', dataIndex: 'date', key: 'date', render: (text) => (
+        <div className="whitespace-nowrap overflow-hidden text-ellipsis">
+          {text}
+        </div>
+      )
+    },
     {
       title: 'Actions',
       key: 'actions',
@@ -119,12 +140,48 @@ const IssueLog = () => {
         </Space>
       ),
     },
-    { title: 'Comment', key: 'comment', render: () => <Button type="link" icon={<MessageOutlined />} /> },
+    {
+      title: 'Comment',
+      key: 'comment',
+      render: (text, record) => (
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <Badge
+            className='!absolute !ml-5 !mb-4'
+            count={record.commentsTotal || 3}
+            size="small"
+            style={{
+              backgroundColor: '#52c41a',
+              fontSize: '10px',
+              marginRight: -8,
+            }}
+          />
+          <Button
+            type="link"
+            icon={<MessageOutlined style={{ fontSize: '18px' }} />}
+            style={{
+              padding: 0,
+              margin: 0,
+              lineHeight: 1,
+            }}
+          />
+        </div>
+      ),
+    },
   ];
 
   return (
     <div>
-      <div style={{ marginBottom: 20 }}>
+      <style>
+        {`
+          .ant-table-thead > tr > th {
+            white-space: nowrap; /* Prevent text wrapping in headers */
+            overflow: hidden; /* Hide overflow text */
+            text-overflow: ellipsis; /* Show ellipsis for overflow text */
+          }
+        `}
+      </style>
+
+      <div className=' ' style={{ marginBottom: 10 }}>
         <Row justify="space-between" align="middle" className="px-2">
           <Col>
             <Title level={3} style={{ color: '#1890ff' }}>Issues</Title>
@@ -138,10 +195,17 @@ const IssueLog = () => {
             </button>
           </Col>
         </Row>
-        <Table columns={columns} dataSource={issueLogData} rowKey="ticketNumber" pagination={{ pageSize: 5 }} />
+        <div style={{ overflowX: 'auto' }}>
+          <Table
+            columns={columns}
+            dataSource={filteredData}
+            rowKey="ticketNumber"
+            pagination={{ pageSize: 10 }}
+            scroll={{ x: true }}
+          />
+        </div>
       </div>
 
-      {/* Edit Drawer */}
       <EditIssueDrawer
         isOpen={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}
@@ -149,10 +213,8 @@ const IssueLog = () => {
         updateIssue={handleUpdateIssue}
       />
 
-      {/* Filter Drawer */}
-      <FilterDrawer isOpen={openedit} onClose={editToggleDrawer} />
+      <FilterDrawer onApplyFilters={onApplyFilters} isOpen={openedit} onClose={editToggleDrawer} />
 
-      {/* Issue Details Modal */}
       <Modal
         title="Issue Details"
         open={isModalOpen}
@@ -163,23 +225,50 @@ const IssueLog = () => {
           </Button>,
         ]}
       >
-        <p><strong>Client:</strong> {selectedIssue?.Client}</p>
-        <p><strong>Region:</strong> {selectedIssue?.Region}</p>
-        <p><strong>Issue Classification:</strong> {selectedIssue?.issueClassification}</p>
-        <p><strong>Handled By:</strong> {selectedIssue?.ShiftHandledBy}</p>
-        <p><strong>Assigned To:</strong> {selectedIssue?.issueAssignedTo || 'Unassigned'}</p>
-        <p><strong>Status:</strong> <Tag color={selectedIssue?.Status === 'pending' ? 'red' : selectedIssue?.Status === 'Working on this' ? 'blue' : 'green'}>
-          {selectedIssue?.Status}
-        </Tag></p>
-        <p><strong>SLA Miss:</strong> <Tag color={selectedIssue?.slaMiss?.status ? 'red' : 'green'}>
-          {selectedIssue?.slaMiss?.status ? 'True' : 'False'}
-        </Tag></p>
-        <p><strong>Date:</strong> {selectedIssue?.date}</p>
-        <p><strong>Details:</strong></p>
-        <p>{selectedIssue?.issuedetails}</p>
+        <Descriptions bordered column={1} size="middle">
+          <Descriptions.Item label={<Text strong>Client</Text>}>
+            <Text>{selectedIssue?.Client}</Text>
+          </Descriptions.Item>
+          <Descriptions.Item label={<Text strong>Region</Text>}>
+            <Text>{selectedIssue?.Region}</Text>
+          </Descriptions.Item>
+          <Descriptions.Item label={<Text strong>Issue Classification</Text>}>
+            <Text>{selectedIssue?.issueClassification}</Text>
+          </Descriptions.Item>
+          <Descriptions.Item label={<Text strong>Handled By</Text>}>
+            <Text>{selectedIssue?.ShiftHandledBy}</Text>
+          </Descriptions.Item>
+          <Descriptions.Item label={<Text strong>Assigned To</Text>}>
+            <Text>{selectedIssue?.issueAssignedTo || 'Unassigned'}</Text>
+          </Descriptions.Item>
+          <Descriptions.Item label={<Text strong>Status</Text>}>
+            <Tag
+              color={selectedIssue?.Status === 'pending' ? 'red'
+                : selectedIssue?.Status === 'Working on this' ? 'blue'
+                  : 'green'}
+            >
+              {selectedIssue?.Status}
+            </Tag>
+          </Descriptions.Item>
+          <Descriptions.Item label={<Text strong>SLA Miss</Text>}>
+            <Tag color={selectedIssue?.slaMiss?.status ? 'red' : 'green'}>
+              {selectedIssue?.slaMiss?.status ? 'True' : 'False'}
+            </Tag>
+          </Descriptions.Item>
+          <Descriptions.Item label={<Text strong>Current DB Latency</Text>}>
+            <Text>{selectedIssue?.slaMiss[0]?.currentDbLatency || 'N/A'}</Text>
+          </Descriptions.Item>
+          <Descriptions.Item label={<Text strong>Date</Text>}>
+            <Text>{selectedIssue?.date}</Text>
+          </Descriptions.Item>
+        </Descriptions>
+
+        <Divider />
+
+        <Text strong>Details:</Text>
+        <p style={{ marginTop: 8 }}>{selectedIssue?.issuedetails}</p>
       </Modal>
 
-      {/* Delete Modal */}
       <IssueLogDeleteModal
         isModalVisible={isOpendeleteModal}
         setIsModalVisible={setIsOpenDeleteModal}
