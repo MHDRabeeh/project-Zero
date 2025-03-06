@@ -27,11 +27,11 @@ const AddTableDataForm = () => {
             issuedetails: values.issueDetails,
             ShiftHandledBy: "Michel",
             Status: "pending",
-            date:today,
+            date: today,
             slaMiss: [
                 {
                     status: false,
-                    currentDbLatency: values.currentDbLatency || null, 
+                    currentDbLatency: values.currentDbLatency || null,
                     maxDblatency: null,
                     sladetails: null,
                 }
@@ -64,19 +64,19 @@ const AddTableDataForm = () => {
     };
 
     const handleRegionChange = (value) => {
-        if(value==="Prod"){
+        if (value === "Prod") {
             setSelectedRegion(true);
-        }else{
+        } else {
             setSelectedRegion(false)
         }
-        
+
     };
 
-  
+
 
     return (
         <div className="flex flex-col bg-white rounded-md p-6 shadow-lg border border-cyan-100">
-            <h1 className="text-2xl font-semibold rounded-t-md pl-3 bg-cyan-50 text-cyan-700 mb-6 border-b-2 border-cyan-200 pb-2 hover:bg-cyan-100 hover:text-cyan-800 transition-colors duration-200">
+            <h1 className="text-2xl font-semibold text-cyan-700 mb-6">
                 Add New Issue
             </h1>
 
@@ -122,15 +122,15 @@ const AddTableDataForm = () => {
                 </Row>
 
                 {/* Current DB Latency */}
-              
-                    <Form.Item
-                        label="Current DB Latency"
-                        name="currentDbLatency"
-                        rules={[{ required: selectedRegion, message: "Current DB Latency is required for Prod" }]}
-                    >
-                        <Input type="number" placeholder="Enter Current DB Latency" />
-                    </Form.Item>
-            
+
+                <Form.Item
+                    label="Current DB Latency"
+                    name="currentDbLatency"
+                    rules={[{ required: selectedRegion, message: "Current DB Latency is required for Prod" }]}
+                >
+                    <Input type="number" placeholder="Enter Current DB Latency" />
+                </Form.Item>
+
 
                 {/* Issue Classification */}
                 <Form.Item

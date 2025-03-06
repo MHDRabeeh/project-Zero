@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
 import { Home, Users, Folder, Search, Activity, ActivityIcon, ListTodo } from "lucide-react";
+import { AiOutlineIssuesClose } from "react-icons/ai";
+import { TbLogs } from "react-icons/tb";
+import { MdDashboardCustomize } from "react-icons/md";
 import NavItem from "./NavItem";
 import { useNavigate } from "react-router";
 
@@ -22,13 +25,13 @@ const Sidebar = () => {
 
       {/* Navigation Links */}
       <nav className="flex-1 space-y-1 overflow-y-auto"> {/* Allow sidebar content to scroll if needed */}
-        <NavItem icon={Home} label="Dashboard" active={activeItem === "/"} onClick={() => setActiveItem("/")} />
-        <NavItem icon={Users} label="Issue" active={activeItem === "/issue"} onClick={() => setActiveItem("/issue")} />
-        <NavItem icon={Folder} label="Issue Log" active={activeItem === "/issue-log"} onClick={() => setActiveItem("/issue-log")} />
+        <NavItem icon={MdDashboardCustomize} label="Dashboard" active={activeItem === "/"} onClick={() => setActiveItem("/")} />
+        <NavItem icon={AiOutlineIssuesClose} label="Issue" active={activeItem === "/issue"} onClick={() => setActiveItem("/issue")} />
+        <NavItem icon={TbLogs} label="Issue Log" active={activeItem === "/issue-log"} onClick={() => setActiveItem("/issue-log")} />
         <NavItem icon={Activity} label="Activity" active={activeItem === "/activity"} onClick={() => setActiveItem("/activity")} />
-        <NavItem icon={ActivityIcon} label="Activity Log" active={activeItem === "/activity-log"} onClick={() => setActiveItem("/activity-log")} />
+        <NavItem icon={TbLogs} label="Activity Log" active={activeItem === "/activity-log"} onClick={() => setActiveItem("/activity-log")} />
         <NavItem icon={ListTodo} label="My Todo" active={activeItem === "/my-todo"} onClick={() => setActiveItem("/my-todo")} />
-        <NavItem icon={Search} label="SAL Search" active={activeItem === "/sla-search"} onClick={() => setActiveItem("/sla-search")} />
+        <NavItem icon={TbLogs} label="SLA Miss Log" active={activeItem === "/sla-search"} onClick={() => setActiveItem("/sla-search")} />
       </nav>
 
       {/* Optional: User Profile or Footer */}

@@ -184,7 +184,7 @@ const IssueLog = () => {
       <div className=' ' style={{ marginBottom: 10 }}>
         <Row justify="space-between" align="middle" className="px-2">
           <Col>
-            <Title level={3} style={{ color: '#1890ff' }}>Issues</Title>
+            <Title level={3} style={{ color: '#1890ff' }}>Issues Log</Title>
           </Col>
           <Col>
             <button

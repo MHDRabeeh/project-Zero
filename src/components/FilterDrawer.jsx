@@ -6,14 +6,14 @@ import { resetFilter } from "../features/issueSlice";
 const { Option } = Select;
 
 const FilterDrawer = ({ isOpen, onClose, onApplyFilters }) => {
-    const dispatch = useDispatch()
+    const dispatch = useDispatch();
     const [filters, setFilters] = useState({
         ticketNo: "",
-        client: "",
-        region: "",
+        client: undefined, // Set to undefined for placeholder to work
+        region: undefined, // Set to undefined for placeholder to work
         classification: "",
         handledBy: "",
-        assignedTo: "",
+        assignedTo: undefined, // Set to undefined for placeholder to work
         status: "",
         date: null, // Store as a moment object or null
     });
@@ -27,10 +27,10 @@ const FilterDrawer = ({ isOpen, onClose, onApplyFilters }) => {
         onApplyFilters(filtersToApply);
         onClose();
     };
+
     const clients = ['Client A', 'Client B', 'Client C'];
     const regions = ['Region 1', 'Region 2', 'Region 3', "Prod"];
-    const issue = ["Ram(dev)"]
-
+   
 
     return (
         <Drawer title="Filter Issues" placement="right" width={350} onClose={onClose} open={isOpen}>
@@ -47,7 +47,7 @@ const FilterDrawer = ({ isOpen, onClose, onApplyFilters }) => {
                     <Select
                         showSearch
                         placeholder="Select a client"
-                        value={filters.client}
+                        value={filters.client} 
                         onChange={(value) => setFilters({ ...filters, client: value })}
                         options={clients.map(client => ({ value: client, label: client }))}
                         allowClear
@@ -74,36 +74,46 @@ const FilterDrawer = ({ isOpen, onClose, onApplyFilters }) => {
                 </Form.Item>
 
                 <Form.Item label="Shift Handled By">
-                    <Input
+                    {/* <Input
                         placeholder="Enter handler"
                         value={filters.handledBy}
                         onChange={(e) => setFilters({ ...filters, handledBy: e.target.value })}
-                    />
+                    /> */}
+                    <Select
+                        placeholder="Select hadler"
+                        value={filters.handledBy || undefined}
+                        onChange={(value) => setFilters({ ...filters, handledBy: value })}
+                        allowClear
+                    >
+                        <Option value="ram">Ram (dev)</Option>
+                        <Option value="shamil">Shamil (dev)</Option>
+                        <Option value="john">John (admin)</Option>
+                        <Option value="Rahul">Rahul (member)</Option>
+                        <Option value="syed">Syed (dev)</Option>
+                    </Select>
                 </Form.Item>
 
                 <Form.Item label="Issue Assigned To">
-                    {/* <Input
-                        placeholder="Enter assignee"
-                        value={filters.assignedTo}
-                        onChange={(e) => setFilters({ ...filters, assignedTo: e.target.value })}
-                    /> */}
                     <Select
-                        value={filters.assignedTo}
-                        placeholder="select Assigned to"
+                        placeholder="Select assignee"
+                        value={filters.assignedTo} 
                         onChange={(value) => setFilters({ ...filters, assignedTo: value })}
+                        allowClear
                     >
                         <Option value="ram">Ram (dev)</Option>
-                        <Option value="shamil">shamil(dev)</Option>
-                        <Option value="john">john(admin)</Option>
-                        <Option value="Rahul">Rahul(member)</Option>
-                        <Option value="syed">syed(dev)</Option>
+                        <Option value="shamil">Shamil (dev)</Option>
+                        <Option value="john">John (admin)</Option>
+                        <Option value="Rahul">Rahul (member)</Option>
+                        <Option value="syed">Syed (dev)</Option>
                     </Select>
                 </Form.Item>
 
                 <Form.Item label="Status">
                     <Select
+                        placeholder="Select status"
                         value={filters.status}
                         onChange={(value) => setFilters({ ...filters, status: value })}
+                        allowClear
                     >
                         <Option value="">All</Option>
                         <Option value="pending">Pending</Option>
@@ -126,18 +136,19 @@ const FilterDrawer = ({ isOpen, onClose, onApplyFilters }) => {
                     </Button>
                     <Button
                         style={{ marginLeft: 8 }}
-                        onClick={() =>
+                        onClick={() => {
                             setFilters({
                                 ticketNo: "",
-                                client: "",
-                                region: "",
+                                client: undefined, // Reset to undefined
+                                region: undefined, // Reset to undefined
                                 classification: "",
                                 handledBy: "",
-                                assignedTo: "",
+                                assignedTo: undefined, // Reset to undefined
                                 status: "",
                                 date: null, // Reset to null
-                            }, dispatch(resetFilter()))
-                        }
+                            });
+                            dispatch(resetFilter());
+                        }}
                     >
                         Reset
                     </Button>

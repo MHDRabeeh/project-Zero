@@ -40,14 +40,14 @@ const Dashboard = () => {
 
     function handleUpdateSubmit(values) {
         console.log(values);
-        
+
         const newUpdate = {
             id: Date.now(), // Generate a unique ID
             UpaterName: values.name, // Automatically included user name
             designation: "Dev", // User's designation
             Update: values.update, // Update content
             Date: values.date, // Automatically included current date
-            conformedBy:values.conformedBy
+            conformedBy: values.conformedBy
         };
 
         dispatch(createUpdate(newUpdate))
@@ -63,7 +63,7 @@ const Dashboard = () => {
         item.designation.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.Update.toLowerCase().includes(searchTerm.toLowerCase())
     );
-    
+
     console.log(isDrawerVisible);
 
     return (
@@ -80,7 +80,7 @@ const Dashboard = () => {
                     }}
                 >
                     <Title level={3} style={{ color: '#0050b3', marginBottom: 8 }}>
-                        Welcome Back, User!
+                        Welcome Back, Micheal
                     </Title>
                     <Text type="secondary" style={{ fontSize: 16 }}>
                         {"Here's what's happening with your updates today."}
@@ -118,7 +118,7 @@ const Dashboard = () => {
                             Important Updates
                         </Title>
 
-                        <div>asfsadf</div>
+                        {/* <div>asfsadf</div> */}
 
                     </div>
 
@@ -128,17 +128,19 @@ const Dashboard = () => {
                         <Col span={24}>
                             <Input
                                 placeholder="Search Updates..."
-                                prefix={<SearchOutlined style={{ color: '#bfbfbf' }} />}
+                                prefix={<SearchOutlined style={{ color: '#bfbfbf', fontSize: '18px' }} />} // Increase icon size
                                 onChange={(e) => setSearchTerm(e.target.value)}
                                 style={{
                                     borderRadius: 8,
                                     background: '#f0f2f5',
                                     border: 'none',
+                                    height: '48px', 
+                                    fontSize: '16px', 
+                                    padding: '12px 16px', 
                                 }}
                             />
                         </Col>
                     </Row>
-
                     {/* Notification List */}
                     <div className=' '>
                         <List

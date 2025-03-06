@@ -129,12 +129,12 @@ const SlaSearch = () => {
       ),
     },
     {
-      title: "Current_DBLatency",
+      title: "Max DB Latency",
       dataIndex: "slaMiss",
       key: "slaMiss",
       render: (currentDbLatency) => {
-        console.log(currentDbLatency[0]?.currentDbLatency, "this is current db latency");
-        return currentDbLatency[0]?.currentDbLatency || "--";
+        console.log(currentDbLatency[0]?.maxDblatency, "this is current db latency");
+        return currentDbLatency[0]?.maxDblatency || "--";
       },
     },
     {

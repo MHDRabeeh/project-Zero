@@ -40,15 +40,23 @@ const ActivityLog = () => {
   };
 
   const filteredLogs = activityLogs.filter((log) => {
+    const logFromDate = new Date(log.fromDate);
+    const logToDate = new Date(log.toDate);
+    const filterFromDate = filters.fromDate ? new Date(filters.fromDate) : null;
+    const filterToDate = filters.toDate ? new Date(filters.toDate) : null;
+
     return (
       (filters.client ? log.client.toLowerCase().includes(filters.client.toLowerCase()) : true) &&
       (filters.region ? log.region.toLowerCase().includes(filters.region.toLowerCase()) : true) &&
       (filters.mailSub ? log.mailSub.toLowerCase().includes(filters.mailSub.toLowerCase()) : true) &&
-      (filters.fromDate ? new Date(log.fromDate) >= new Date(filters.fromDate) : true) &&
-      (filters.toDate ? new Date(log.toDate) <= new Date(filters.toDate) : true) &&
+      (filterFromDate ? logFromDate >= filterFromDate : true) &&
+      (filterToDate ? logToDate <= filterToDate : true) &&
       (filters.timeZone ? log.timeZone.toLowerCase().includes(filters.timeZone.toLowerCase()) : true) &&
       (filters.action ? log.action.toLowerCase().includes(filters.action.toLowerCase()) : true) &&
-      (filters.createdBy ? log.createdBy.fname.toLowerCase().includes(filters.createdBy.toLowerCase()) || log.createdBy.lname.toLowerCase().includes(filters.createdBy.toLowerCase()) : true)
+      (filters.createdBy
+        ? log.createdBy.fname.toLowerCase().includes(filters.createdBy.toLowerCase()) ||
+        log.createdBy.lname.toLowerCase().includes(filters.createdBy.toLowerCase())
+        : true)
     );
   });
 
@@ -118,7 +126,7 @@ const ActivityLog = () => {
 
   return (
     <div>
-       <style>
+      <style>
         {`
           .ant-table-thead > tr > th {
             white-space: nowrap; /* Prevent text wrapping in headers */
@@ -133,7 +141,7 @@ const ActivityLog = () => {
         </Col>
         <Col>
           <button
-          onClick={() => setIsFilterOpen(true)}
+            onClick={() => setIsFilterOpen(true)}
             className="flex items-center bg-white mb-1 text-[#1890ff] px-4 py-2 rounded-md hover:bg-cyan-100 transition-colors"
           >
             <Filter size={18} className="mr-2" />Filter

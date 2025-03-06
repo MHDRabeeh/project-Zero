@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Drawer, Form, Input, Select, Button, Modal, DatePicker } from 'antd';
-import dayjs from 'dayjs'; 
+import dayjs from 'dayjs';
 
 const { Option } = Select;
 
@@ -68,14 +68,14 @@ const EditIssueDrawer = ({ isOpen, onClose, selectedIssue, updateIssue }) => {
   };
 
   return (
-    <Drawer title="Edit Issue" placement="right" onClose={onClose} open={isOpen}>
-      <Form form={form} onFinish={onFinish} initialValues={selectedIssue}>
+    <Drawer className='' title="Edit Issue" placement="right" onClose={onClose} open={isOpen}>
+      <Form className=' !mb-10' form={form} onFinish={onFinish} initialValues={selectedIssue}>
         <Form.Item name="ticketNumber" label="Ticket Number">
           <Input disabled />
         </Form.Item>
 
         {/* Client Dropdown */}
-        <Form.Item name="Client" label="Client">
+        <Form.Item className=' !mb-8' name="Client" label="Client">
           <Select placeholder="Select a client" showSearch >
             {clients.map((client) => (
               <Option key={client} value={client}>
@@ -86,7 +86,7 @@ const EditIssueDrawer = ({ isOpen, onClose, selectedIssue, updateIssue }) => {
         </Form.Item>
 
         {/* Region Dropdown */}
-        <Form.Item name="Region" label="Region">
+        <Form.Item className=' !mb-8' name="Region" label="Region">
           <Select placeholder="Select a region" showSearch>
             {regions.map((region) => (
               <Option key={region} value={region}>
@@ -97,21 +97,31 @@ const EditIssueDrawer = ({ isOpen, onClose, selectedIssue, updateIssue }) => {
         </Form.Item>
 
         {/* Date Field */}
-        <Form.Item name="date" label="Date">
+        <Form.Item className='hidden' name="date" label="Date">
           <DatePicker format="YYYY-MM-DD" style={{ width: '100%' }} />
         </Form.Item>
 
-        <Form.Item name="issueClassification" label="Issue Classification">
+        <Form.Item className=' !mb-8' name="issueClassification" label="Issue Classification">
           <Input />
         </Form.Item>
-        <Form.Item name="issuedetails" label="Issue Details">
+        <Form.Item className=' !mb-8' name="issuedetails" label="Issue Details">
           <Input.TextArea />
         </Form.Item>
-        <Form.Item name="ShiftHandledBy" label="Shift Handled By">
+        <Form.Item className='hidden' name="ShiftHandledBy" label="Shift Handled By">
           <Input />
         </Form.Item>
-        <Form.Item name="issueAssignedTo" label="Issue Assigned To">
-          <Input />
+        <Form.Item className=' !mb-8' name="issueAssignedTo" label="Issue Assigned To">
+          <Select
+          showSearch
+
+            placeholder="select Assigned to"
+          >
+            <Option value="ram">Ram (dev)</Option>
+            <Option value="shamil">shamil(dev)</Option>
+            <Option value="john">john(admin)</Option>
+            <Option value="Rahul">Rahul(member)</Option>
+            <Option value="syed">syed(dev)</Option>
+          </Select>
         </Form.Item>
         <Form.Item name="Status" label="Status">
           <Select>
@@ -125,7 +135,7 @@ const EditIssueDrawer = ({ isOpen, onClose, selectedIssue, updateIssue }) => {
         <Form.Item
           name={['slaMiss', 0, 'status']}
           label="SLA Miss"
-          className={status!=='resolved'&&'hidden' }
+          className={status !== 'resolved' && 'hidden !mb-5'}
         >
           <Select onChange={handleSlaMissChange}>
             <Option value={false}>False</Option>
@@ -147,16 +157,16 @@ const EditIssueDrawer = ({ isOpen, onClose, selectedIssue, updateIssue }) => {
         footer={null}
       >
         <Form onFinish={handleSlaMissModalOk}>
-          <Form.Item name="currentDbLatency" label="Current DB Latency">
+          <Form.Item className='!mb-5' name="currentDbLatency" label="Current DB Latency">
             <Input type="number" />
           </Form.Item>
           <Form.Item name="maxDblatency" label="Max DB Latency">
             <Input type="number" />
           </Form.Item>
-          <Form.Item name="sladetails" label="SLA Details">
+          <Form.Item className='!mb-5' name="sladetails" label="SLA Details">
             <Input.TextArea />
           </Form.Item>
-          <Form.Item>
+          <Form.Item className=''>
             <Button type="primary" htmlType="submit">
               Save
             </Button>
