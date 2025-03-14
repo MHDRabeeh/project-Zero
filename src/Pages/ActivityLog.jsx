@@ -125,7 +125,7 @@ const ActivityLog = () => {
   ];
 
   return (
-    <div>
+    <div className=' '>
       <style>
         {`
           .ant-table-thead > tr > th {
@@ -135,7 +135,7 @@ const ActivityLog = () => {
           }
         `}
       </style>
-      <Row justify="space-between" align="middle" className="px-2">
+      <Row justify="space-between" align="middle" className="px-2 py-1.5 bg-white rounded-sm mb-1">
         <Col>
           <Title level={3} style={{ color: '#1890ff' }}>Activity Logs</Title>
         </Col>

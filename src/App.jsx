@@ -9,6 +9,7 @@ import Activity from "./Pages/Activity";
 import ActivityLog from "./Pages/ActivityLog";
 import MyTodo from "./Pages/MyTodo";
 import SlaSearch from "./Pages/SlaSearch";
+import CommentSection from "./Pages/Comment";
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
           <Route path="/activity-log" element={<ActivityLog />} />
           <Route path="/my-todo" element={<MyTodo />} />
           <Route path="/sla-search" element={<SlaSearch />} />
+          <Route  path="/comment" element={<CommentSection/>}/>
         </Routes>
       </div>
     </div>

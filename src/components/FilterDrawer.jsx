@@ -30,7 +30,7 @@ const FilterDrawer = ({ isOpen, onClose, onApplyFilters }) => {
 
     const clients = ['Client A', 'Client B', 'Client C'];
     const regions = ['Region 1', 'Region 2', 'Region 3', "Prod"];
-   
+
 
     return (
         <Drawer title="Filter Issues" placement="right" width={350} onClose={onClose} open={isOpen}>
@@ -47,7 +47,7 @@ const FilterDrawer = ({ isOpen, onClose, onApplyFilters }) => {
                     <Select
                         showSearch
                         placeholder="Select a client"
-                        value={filters.client} 
+                        value={filters.client}
                         onChange={(value) => setFilters({ ...filters, client: value })}
                         options={clients.map(client => ({ value: client, label: client }))}
                         allowClear
@@ -82,6 +82,7 @@ const FilterDrawer = ({ isOpen, onClose, onApplyFilters }) => {
                     <Select
                         placeholder="Select hadler"
                         value={filters.handledBy || undefined}
+                        showSearch
                         onChange={(value) => setFilters({ ...filters, handledBy: value })}
                         allowClear
                     >
@@ -95,8 +96,9 @@ const FilterDrawer = ({ isOpen, onClose, onApplyFilters }) => {
 
                 <Form.Item label="Issue Assigned To">
                     <Select
+                        showSearch
                         placeholder="Select assignee"
-                        value={filters.assignedTo} 
+                        value={filters.assignedTo}
                         onChange={(value) => setFilters({ ...filters, assignedTo: value })}
                         allowClear
                     >

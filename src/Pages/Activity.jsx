@@ -35,7 +35,7 @@ const ActivityForm = () => {
   };
 
   return (
-    <div>
+    <div className='bg-white rounded-md p-6 shadow-lg border border-cyan-100'>
       <h1 className="text-2xl font-semibold text-cyan-700 mb-6">
         Create New Activity
       </h1>

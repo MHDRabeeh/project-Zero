@@ -1,0 +1,96 @@
+import { Button, Table, Tag } from "antd";
+
+const TableComponent = ({ data }) => {
+    console.log(data,"datafrom table compoenent");
+    const newArr = []
+    const newData = newArr.push(data) 
+
+    const showDetails = ()=>{
+
+    }
+  const columns = [
+    {
+      title: '#',
+      key: 'rowNumber',
+      render: (text, record, index) => index + 1,
+    },
+    { title: 'Ticket No', dataIndex: 'ticketNumber', key: 'ticketNumber' },
+    {
+      title: 'Client',
+      dataIndex: 'Client',
+      key: 'Client',
+      render: (text) => (
+        <div className="whitespace-nowrap overflow-hidden text-ellipsis">
+          {text}
+        </div>
+      ),
+    },
+    {
+      title: 'Region',
+      dataIndex: 'Region',
+      key: 'Region',
+      render: (text) => (
+        <div className="whitespace-nowrap overflow-hidden text-ellipsis">
+          {text}
+        </div>
+      ),
+    },
+    { title: 'Issue Classification', dataIndex: 'issueClassification', key: 'issueClassification' },
+    {
+      title: 'Issue Details',
+      dataIndex: 'issuedetails',
+      key: 'issuedetails',
+      render: (text, record) => (
+        <Button type="link" onClick={() => showDetails(record)}>
+          {text.length > 15 ? `${text.substring(0, 15)}...` : text}
+        </Button>
+      ),
+    },
+    { title: 'Shift Handled by', dataIndex: 'shiftHandledBy', key: 'shiftHandledBy' },
+    { title: 'Issue Assigned To', dataIndex: 'issueAssignedTo', key: 'issueAssignedTo', render: (text) => text || 'Unassigned' },
+    {
+      title: 'Status',
+      dataIndex: 'Status',
+      key: 'Status',
+      render: (status) => (
+        <Tag color={status === 'pending' ? 'red' : status === 'Working on this' ? 'blue' : 'green'}>
+          {status}
+        </Tag>
+      ),
+    },
+    {
+      title: 'SLA Miss',
+      dataIndex: 'slaMiss',
+      key: 'slaMiss',
+      render: (slaMiss) => (
+        <Tag color={slaMiss?.[0]?.status ? 'red' : 'green'}>
+          {slaMiss?.[0]?.status ? 'True' : 'False'}
+        </Tag>
+      ),
+    },
+    {
+      title: 'Current_DBLatency',
+      dataIndex: 'slaMiss',
+      key: 'currentDbLatency',
+      render: (currentDbLatency) => {
+        console.log(currentDbLatency[0]?.currentDbLatency, "this is current db latency");
+        return (currentDbLatency[0]?.currentDbLatency || "--");
+      },
+    },
+    {
+      title: 'Date', dataIndex: 'date', key: 'date', render: (text) => (
+        <div className="whitespace-nowrap overflow-hidden text-ellipsis">
+          {text}
+        </div>
+      )
+    },
+  ];
+
+  return (
+    <div>
+      <Table dataSource={[{...data}]}  columns={columns} rowKey="ticketNumber" />
+    </div>
+  );
+};
+
+export default TableComponent;
