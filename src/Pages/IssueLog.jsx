@@ -25,6 +25,8 @@ const IssueLog = () => {
   const [isOpendeleteModal, setIsOpenDeleteModal] = useState(false);
   const [selectedIssue, setSelectedIssue] = useState(null);
   const [selectedItem, setSelectedItem] = useState(null);
+  console.log(issueLogData,"thi s");
+  
 
   const toggleDrawer = () => setIsDrawerOpen(!isDrawerOpen);
   const editToggleDrawer = () => setOpenedit(!openedit);

@@ -1,7 +1,7 @@
 import { BellOutlined, CheckCircleOutlined, DeleteOutlined, SearchOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, Input, Card, List, Typography, Row, Col } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
-import { deleteUpdates, createUpdate, clearAllUpdates } from '../features/impUpdateSlice';
+import { deleteUpdates, createUpdate, clearAllUpdates, UpdateRead } from '../features/impUpdateSlice';
 import { useState } from 'react';
 import DeleteModal from '../components/modal/DeleteModal';
 import CreateUpdateDrawer from '../components/Drawer/CreateUpdateDrawer';
@@ -13,10 +13,18 @@ const Dashboard = () => {
     const [isDrawerVisible, setIsDrawerVisible] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
+    const [isHandleShowUpdates, setIsHandleShowUpdates] = useState(false)
     let updateData = useSelector((state) => state.impUpdates);
+    console.log(updateData);
+    
     const dispatch = useDispatch();
     const userName = "Michael";
-
+    let newUpdatedData;
+    if(isHandleShowUpdates){
+        newUpdatedData = updateData.filter((data)=>data.isRead===true)
+    }else{
+        newUpdatedData = updateData.filter((data)=>data.isRead===false)
+    }
     const showDeleteModal = (item) => {
         setSelectedItem(item);
         setIsModalVisible(true);
@@ -42,16 +50,22 @@ const Dashboard = () => {
             Update: values.update,
             Date: values.date,
             conformedBy: values.conformedBy,
+            isRead: values.isRead
         };
         dispatch(createUpdate(newUpdate));
     };
-
-    const filteredData = updateData.filter((item) =>
+  
+    const filteredData = newUpdatedData.filter((item) =>
         item.UpaterName.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.designation.toLowerCase().includes(searchTerm.toLowerCase()) ||
         item.Update.toLowerCase().includes(searchTerm.toLowerCase())
     );
+    const handleShowUpdates = (value) => {
+        setIsHandleShowUpdates(value)
+    }
 
+    let btnOne = 'flex items-center justify-center px-6 py-2 !bg-[#1a73e8] !text-white  !hover:bg-[#1557b0] !transition-all !duration-300 shadow-md hover:shadow-lg'
+    let btnTwo = 'flex items-center justify-center px-6 py-2 !bg-gray-100 !text-[#1a73e8] !hover:bg-gray-200 !transition-all !duration-300 shadow-md hover:shadow-lg'
     return (
         <>
             <div style={{ padding: 24 }}>
@@ -103,15 +117,17 @@ const Dashboard = () => {
                 >
                     {/* Toggle Buttons */}
                     <div className='flex items-center gap-2 mb-5'>
-                        <Button
+                        <Button onClick={() => handleShowUpdates(false)}
                             type="primary"
-                            className='flex items-center justify-center px-6 py-2 bg-[#1a73e8] text-white rounded-full hover:bg-[#1557b0] transition-all duration-300 shadow-md hover:shadow-lg'
+                            className={isHandleShowUpdates?btnTwo:btnOne}
                         >
                             Important Update
                         </Button>
                         <Button
-                            className='flex items-center justify-center px-6 py-2 bg-gray-100 text-[#1a73e8] rounded-full hover:bg-gray-200 transition-all duration-300 shadow-md hover:shadow-lg'
-                        >
+                            onClick={() => handleShowUpdates(true)}
+                            
+                            className={isHandleShowUpdates?btnOne:btnTwo}              
+                               >
                             Past Update
                         </Button>
                     </div>
@@ -153,17 +169,21 @@ const Dashboard = () => {
                                 }}
                                 className="hover:shadow-lg"
                                 actions={[
-                                    <Button
+                                    
+                                    !isHandleShowUpdates &&  <Button
+                                       
                                         key={1}
                                         type="text"
                                         icon={<CheckCircleOutlined style={{ color: '#1a73e8' }} />}
-                                        onClick={() => handleDelete(item.id)}
+                                        onClick={() =>dispatch(UpdateRead(item.id))}
+                                        disabled={item.isRead} 
                                     />,
                                     <Button
                                         type="text"
                                         key={2}
                                         icon={<DeleteOutlined style={{ color: '#ff4d4f' }} />}
                                         onClick={() => showDeleteModal(item)}
+                                       
                                     />,
                                 ]}
                             >
@@ -194,22 +214,25 @@ const Dashboard = () => {
                     />
 
                     {/* Quick Actions */}
-                    <Row justify="end" style={{ marginTop: 24 }}>
-                        <Col>
-                            <Button
-                                icon={<CheckCircleOutlined />}
-                                onClick={handleMarkAllAsRead}
-                                style={{
-                                    background: '#e6f7ff',
-                                    color: '#1a73e8',
-                                    border: 'none',
-                                    borderRadius: 8,
-                                }}
-                            >
-                                Mark All as Read
-                            </Button>
-                        </Col>
-                    </Row>
+                    {!isHandleShowUpdates && (
+                        <Row justify="end" style={{ marginTop: 24 }}>
+                            <Col>
+                                <Button
+                                    icon={<CheckCircleOutlined />}
+                                    onClick={handleMarkAllAsRead}
+                                    style={{
+                                        background: '#e6f7ff',
+                                        color: '#1a73e8',
+                                        border: 'none',
+                                        borderRadius: 8,
+                                    }}
+                                >
+                                    Mark All as Read
+                                </Button>
+                            </Col>
+                        </Row>
+                    )}
+
                 </Card>
             </div>
 

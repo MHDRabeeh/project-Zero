@@ -1,4 +1,4 @@
-import React from 'react'
+
 import {Button, Descriptions, Divider, Modal,Tag,Typography} from 'antd'
 
 const IssueDetailesModal = ({isModalOpen,setIsModalOpen,selectedIssue}) => {

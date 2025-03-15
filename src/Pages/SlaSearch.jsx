@@ -2,17 +2,20 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Table, Button, Modal, Tag, Typography, Row, Col, Badge, Space, Descriptions, Divider } from "antd";
 import { Filter,  Trash  } from "lucide-react";
-import {MessageOutlined,DeleteOutlined} from "@ant-design/icons" 
+import {DeleteOutlined, MessageOutlined} from "@ant-design/icons" 
+
 
 import FilterDrawer from "../components/FilterDrawer";
 import { applyFilter, deleteRow } from "../features/issueSlice";
 import IssueLogDeleteModal from "../components/modal/IssueLogDeleteModal";
+import { useNavigate } from "react-router";
 
 const { Title, Text } = Typography;
 
 const SlaSearch = () => {
   const dispatch = useDispatch();
   const issueLogData = useSelector((state) => state.issueLogs);
+  const navigate =useNavigate()
 
   // State for managing modals and selected data
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -57,6 +60,10 @@ const SlaSearch = () => {
   const handleDelete = (ticketNumber) => {
     dispatch(deleteRow(ticketNumber));
   };
+  const handleComment=(data)=>{
+    const newState = { ...data, slaPage: true };
+    navigate("/comment", { state: newState });
+  }
 
   // Table columns
   const columns = [
@@ -154,6 +161,35 @@ const SlaSearch = () => {
         <Space>
           <Button type="link" icon={<DeleteOutlined />} danger onClick={() => showDeleteModal(record)} />
         </Space>
+      ),
+    },
+    {
+      title: 'Comment',
+      key: 'comment',
+      render: (text, record) => (
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <Badge
+            className='!absolute !ml-5 !mb-4'
+            count={record.commentsTotal || 3}
+            size="small"
+            style={{
+              backgroundColor: '#52c41a',
+              fontSize: '10px',
+              marginRight: -8,
+            }}
+          />
+         
+          <Button
+          onClick={()=>handleComment(record)}
+            type="link"
+            icon={<MessageOutlined style={{ fontSize: '18px' }} />}
+            style={{
+              padding: 0,
+              margin: 0,
+              lineHeight: 1,
+            }}
+          />
+        </div>
       ),
     },
     {

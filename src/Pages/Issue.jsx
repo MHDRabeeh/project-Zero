@@ -54,13 +54,13 @@ const AddTableDataForm = () => {
         };
         dispatch(addIssueData(addnewissue));
 
-        alert("Form submitted successfully!");
+     
         form.resetFields();
     };
 
     const handleCancel = () => {
         form.resetFields();
-        alert("Form canceled.");
+       
     };
 
     const handleRegionChange = (value) => {

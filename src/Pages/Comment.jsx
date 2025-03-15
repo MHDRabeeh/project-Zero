@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { Avatar, Form, Button, List, Input, Upload, message, Image } from 'antd';
-import {useLocation} from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { PlusOutlined, SendOutlined } from '@ant-design/icons';
 import CustomComment from '../components/CustomComment';
 import TableComponent from '../components/Table';
+import './CommentSection.css'; // Import custom CSS
+
 const { TextArea } = Input;
 
 const getBase64 = (file) =>
@@ -27,14 +29,18 @@ const CommentSection = () => {
             message.warning('Please enter a comment!');
             return;
         }
-
+    
         const newComment = {
+            id: Date.now(), // Add a unique ID for each comment
             author: 'Micheal Johne', // Replace with actual user name
             content: value,
-            datetime: new Date().toLocaleDateString(),
-            file: fileList[0] || null,
+            datetime: new Date().toLocaleString(), // Add proper date and time
+            file: fileList.map((file) => ({
+                url: file.url || file.thumbUrl, // Ensure high-resolution URL is used
+                thumbUrl: file.thumbUrl, // Optional: Keep thumbnail URL for smaller previews
+            })),
         };
-
+    
         setComments([...comments, newComment]);
         setValue('');
         setFileList([]);
@@ -48,6 +54,18 @@ const CommentSection = () => {
         }
         setPreviewImage(file.url || file.preview);
         setPreviewOpen(true);
+    };
+
+    const handleEditComment = (id, newContent) => {
+        const updatedComments = comments.map(comment =>
+            comment.id === id ? { ...comment, content: newContent } : comment
+        );
+        setComments(updatedComments);
+    };
+
+    const handleDeleteComment = (id) => {
+        const updatedComments = comments.filter(comment => comment.id !== id);
+        setComments(updatedComments);
     };
 
     const uploadButton = (
@@ -70,59 +88,64 @@ const CommentSection = () => {
     );
 
     return (
-        <div>
-          { location?.state&& <TableComponent data={location?.state}/>}
-            <div style={{ display: 'flex', marginTop: 16 }}>
-                <Avatar className='!bg-[#f56a00]'>MJ</Avatar>
-                <div className='!ml-8 !flex-1'>
-                    <Form.Item>
-                        <div style={{ position: 'relative', width: '100%' }}>
-                            <TextArea
-                                rows={4}
-                                onChange={(e) => setValue(e.target.value)}
-                                value={value}
-                                placeholder="Write a comment..."
-                                autoSize={{ minRows: 3, maxRows: 6 }}
-                                style={{ paddingRight: 80 }} // Add padding to avoid text overlapping with the button
-                            />
-                            <Button
-                                type="primary"
-                                icon={<SendOutlined />}
-                                onClick={handleSubmit}
-                                style={{
-                                    position: 'absolute',
-                                    right: 12,
-                                    bottom: 12,
-                                    zIndex: 1,
-                                }}
+        <div className="comment-section-container">
+            {location?.state && <TableComponent data={location?.state} />}
+            {!location.state.slaPage && (
+                <div className="comment-input-container">
+                    <Avatar className="comment-avatar">MJ</Avatar>
+                    <div className="comment-input-wrapper">
+                        <Form.Item className='!mb-2'>
+                            <div className="comment-textarea-container">
+                                <TextArea
+                                    rules={[{ required: true, message: 'comment area is required' }]}
+                                    rows={4}
+                                    onChange={(e) => setValue(e.target.value)}
+                                    value={value}
+                                    placeholder="Write a comment..."
+                                    autoSize={{ minRows: 3, maxRows: 6 }}
+                                    className="comment-textarea"
+                                />
+                                <Button
+                                    type="primary"
+                                    icon={<SendOutlined />}
+                                    onClick={handleSubmit}
+                                    className="comment-submit-button"
+                                >
+                                    Post
+                                </Button>
+                            </div>
+                        </Form.Item>
+                        <Form.Item className='!m-0'>
+                            <Upload
+                                className='!mb-0'
+                                action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                                listType="picture-card"
+                                fileList={fileList}
+                                onPreview={handlePreview}
+                                onChange={handleFileChange}
+                                beforeUpload={() => false} // Prevent automatic upload
+                                multiple
+                                maxCount={4}
                             >
-                                Post
-                            </Button>
-                        </div>
-                    </Form.Item>
-                    <Form.Item>
-                        <Upload
-                            action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-                            listType="picture-card"
-                            fileList={fileList}
-                            onPreview={handlePreview}
-                            onChange={handleFileChange}
-                            beforeUpload={() => false} // Prevent automatic upload
-                            multiple
-                            maxCount={4}
-                        >
-                            {fileList.length >= 5 ? null : uploadButton}
-                        </Upload>
-                    </Form.Item>
+                                {fileList.length >= 4 ? null : uploadButton}
+                            </Upload>
+                        </Form.Item>
+                    </div>
                 </div>
-            </div>
+            )}
 
-            <div className='bg-white rounded-sm !ml-2 px-3 py-1.5 overflow-auto h-[500px]'>
-                <List
+            <div className="comment-list-container ml-9 ">
+                <List 
                     dataSource={comments}
                     header={`${comments.length} ${comments.length > 1 ? 'comments' : 'comment'}`}
                     itemLayout="horizontal"
-                    renderItem={(item) => <CustomComment {...item} />}
+                    renderItem={(item) => (
+                        <CustomComment
+                            {...item}
+                            onEdit={(newContent) => handleEditComment(item.id, newContent)}
+                            onDelete={() => handleDeleteComment(item.id)}
+                        />
+                    )}
                 />
             </div>
 

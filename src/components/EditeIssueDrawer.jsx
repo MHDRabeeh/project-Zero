@@ -38,7 +38,7 @@ const EditIssueDrawer = ({ isOpen, onClose, selectedIssue, updateIssue }) => {
     // Convert the date back to a string format before saving
     const formattedValues = {
       ...values,
-      date: values.date ? values.date.format('YYYY-MM-DD') : null,
+      date: selectedIssue.date, // Use the original date from selectedIssue
     };
 
     if (updatedslamissvalues.length > 0) {
@@ -96,10 +96,10 @@ const EditIssueDrawer = ({ isOpen, onClose, selectedIssue, updateIssue }) => {
           </Select>
         </Form.Item>
 
-        {/* Date Field */}
-        <Form.Item className='hidden' name="date" label="Date">
-          <DatePicker format="YYYY-MM-DD" style={{ width: '100%' }} />
-        </Form.Item>
+        {/* Date Field - Disabled */}
+        {/* <Form.Item className='' name="date" label="Date" >
+          <DatePicker format="YYYY-MM-DD" style={{ width: '100%' }} disabled  />
+        </Form.Item> */}
 
         <Form.Item className=' !mb-8' name="issueClassification" label="Issue Classification">
           <Input />
@@ -113,7 +113,6 @@ const EditIssueDrawer = ({ isOpen, onClose, selectedIssue, updateIssue }) => {
         <Form.Item className=' !mb-8' name="issueAssignedTo" label="Issue Assigned To">
           <Select
           showSearch
-
             placeholder="select Assigned to"
           >
             <Option value="ram">Ram (dev)</Option>

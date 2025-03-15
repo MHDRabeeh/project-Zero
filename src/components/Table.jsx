@@ -1,12 +1,13 @@
 import { Button, Table, Tag } from "antd";
+import IssueDetailesModal from "./modal/IssueDetailesModal";
+import { useState } from "react";
 
 const TableComponent = ({ data }) => {
     console.log(data,"datafrom table compoenent");
-    const newArr = []
-    const newData = newArr.push(data) 
+    const [isModalOpen,setIsModalOpen] = useState(false)
 
     const showDetails = ()=>{
-
+        setIsModalOpen(true)
     }
   const columns = [
     {
@@ -84,11 +85,23 @@ const TableComponent = ({ data }) => {
         </div>
       )
     },
+    
   ];
 
   return (
-    <div>
-      <Table dataSource={[{...data}]}  columns={columns} rowKey="ticketNumber" />
+    <div>  <style>
+    {`
+      .ant-table-thead > tr > th {
+        white-space: nowrap; /* Prevent text wrapping in headers */
+        overflow: hidden; /* Hide overflow text */
+        text-overflow: ellipsis; /* Show ellipsis for overflow text */
+      }
+    `}
+  </style>
+     
+      
+      <Table dataSource={[{...data}]}   scroll={{ x: true }}  columns={columns} rowKey="ticketNumber" pagination={false}/>
+      <IssueDetailesModal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} selectedIssue={data}/>
     </div>
   );
 };

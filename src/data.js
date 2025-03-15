@@ -7,7 +7,8 @@ export const issueLog = [
     issuedetails:"Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged'	Shift Handled by	Issue Assigned To	Status	Date	Actions	Comment",
     ShiftHandledBy: "Syed",
     issueAssignedTo: null,
-    Status: "pending", // when pending no comments were added and no assignation occurs
+    Status: "pending",
+    date:"2025-03-15",
     slaMiss: [
       {
         status: false,
@@ -71,6 +72,7 @@ export const issueLog = [
     ShiftHandledBy: "Rahul",
     issueAssignedTo: "shamil",
     Status: "Working on this",
+    date:"2025-03-15",
     slaMiss: [
       {
         status: false,
@@ -105,7 +107,7 @@ export const issueLog = [
     ShiftHandledBy: "Rishin",
     issueAssignedTo: "Anjana",
     Status: "resolved",
-    date:"12/10/23",
+    date:"2025-03-15",
     slaMiss: [
       {
         status: true,
@@ -159,7 +161,8 @@ export const issueLog = [
       "6th Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged'	Shift Handled by	Issue Assigned To	Status	Date	Actions	Comment",
     ShiftHandledBy: "john",
     issueAssignedTo: "Dinil",
-    Status: "Resolved", // when pending no comments were added and no assignation occurs
+    Status: "Resolved", 
+    date:"2025-03-15",
     slaMiss: [
       {
         status: true,
@@ -220,6 +223,7 @@ export const issueLog = [
     ShiftHandledBy: "Syed",
     issueAssignedTo: null,
     Status: "pending", // when pending no comments were added and no assignation occurs
+    date:"2025-03-15",
     slaMiss: [
       {
         status: false,
@@ -278,12 +282,14 @@ export const importUpadtes = [
     designation: "DEV",
     Date: "27/2//2025",
     Update:"It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use",
+    isRead:false
   },
   {
     id:2,
     UpaterName: "syed",
     designation: "member",
     Date: "26/2//2025",
+    isRead:false,
     Update:"2 It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use",
   },
   {
@@ -291,6 +297,7 @@ export const importUpadtes = [
     UpaterName: "Ron",
     designation: "DBA",
     Date: "26/2//2025",
+    isRead:false,
     Update:"3 rd It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use",
   },
   

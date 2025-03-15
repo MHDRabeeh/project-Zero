@@ -12,6 +12,7 @@ const CreateUpdateDrawer = ({ visible, onClose, onSubmit, userName }) => {
             ...values,
             name: userName, // Automatically include the user's name
             date: new Date().toLocaleDateString(), // Automatically include the current date
+            isRead: false,
         };
         onSubmit(newUpdate); // Pass the updated values to the parent component
         form.resetFields(); // Reset form fields
@@ -56,7 +57,7 @@ const CreateUpdateDrawer = ({ visible, onClose, onSubmit, userName }) => {
                         rules={[{ required: true, message: 'Please select Conformed by' }]}
                     >
                         <Select
-
+                        showSearch
                         >
                             <Option value="syed">syed</Option>
                             <Option value="Ram">Ram</Option>
